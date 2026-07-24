@@ -1,9 +1,8 @@
 export default class FF {
-    constructor(rowAndColNumber, cellSize, p = 0.55, firemenNumber = 0, simulationSpeed) {
-        this.rowAndColNumber = rowAndColNumber;
+    constructor(rowAndColNumber, cellSize, treeDensity = 0.55, simulationSpeed) {
+        this.rowAndColNumber = rowAndColNumber; // number of rows and columns in the grid
         this.cellSize = cellSize;
-        this.p = p;
-        this.firemenNumber = firemenNumber;
+        this.treeDensity = treeDensity; // probability of a cell being a tree
         this.simulationSpeed = simulationSpeed; // ms between calculations
         this.lastUpdate = 0;
 
@@ -34,8 +33,8 @@ export default class FF {
         this.cells = this.createGrid();
         this.cellsOld = this.createGrid();
         this.steps = 0;
-        this.cellColor = ['#000', '#5D2', '#521', '#F50', '#2ea8dc', '#F0F']; // #f5d9e8
-        this.cellState = { 'EMPTY': 0, 'TREE': 1, 'ASH': 2, 'FIRE': 3, 'FIREMAN': 4, 'WET': 5 };
+        this.cellColor = ['#000', '#5D2', '#521', '#F50']; // #f5d9e8
+        this.cellState = { 'EMPTY': 0, 'TREE': 1, 'ASH': 2, 'FIRE': 3 };
         this.initCells();
         this.run();
     }
@@ -58,7 +57,7 @@ export default class FF {
             for (let x = 0; x < this.cells[y].length; x++) {
                 const rand = Math.random();
 
-                if (rand < this.p) {
+                if (rand < this.treeDensity) {
                     this.cells[y][x] = this.cellState.TREE;
                     trees.push({ x, y });
                 } else {
@@ -70,11 +69,6 @@ export default class FF {
 
         const fireCell = trees[Math.floor(Math.random() * trees.length)];
         this.cells[fireCell.y][fireCell.x] = this.cellState.FIRE;
-
-        for (let k = 0; k < this.firemenNumber; k++) {
-            const fireman = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-            this.cells[fireman.y][fireman.x] = this.cellState.FIREMAN;
-        }
     }
 
     run(timestamp) {
@@ -142,7 +136,6 @@ export default class FF {
     calc() {
         let fireNeightboursNumber;
         let treeNeightboursNumber;
-        let firemanNeightboursNumber;
         let currentCellState;
 
         [this.cells, this.cellsOld] = [this.cellsOld, this.cells];
@@ -151,29 +144,11 @@ export default class FF {
             for (let i = 0; i < this.cellsOld[j].length; i++) {
                 fireNeightboursNumber = this.getNeighboursNumber(j, i, this.cellState.FIRE);
                 treeNeightboursNumber = this.getNeighboursNumber(j, i, this.cellState.TREE);
-                firemanNeightboursNumber = this.getNeighboursNumber(j, i, this.cellState.FIREMAN);
                 currentCellState = this.cellsOld[j][i];
 
                 switch (currentCellState) {
-                    case this.cellState.WET:
-                        this.cells[j][i] = this.cellState.EMPTY;
-                        break;
                     case this.cellState.FIRE:
-                        if (firemanNeightboursNumber === 0) {
-                            this.cells[j][i] = this.cellState.ASH;
-                        }
-                        else {
-                            this.cells[j][i] = this.cellState.FIREMAN;
-                        }
-                    case this.cellState.FIREMAN:
-                        if (fireNeightboursNumber > 0 && fireNeightboursNumber < 4) {
-                            this.cells[j][i] = this.cellState.WET;
-                        }
-                        else if (fireNeightboursNumber > 5) {
-                            this.cells[j][i] = this.cellState.FIRE;
-                        } else {
-                            this.cells[j][i] = this.cellState.FIREMAN;
-                        }
+                        this.cells[j][i] = this.cellState.ASH;
                         break;
                     case this.cellState.TREE:
                         if (fireNeightboursNumber !== 0) {
@@ -182,33 +157,16 @@ export default class FF {
                             this.cells[j][i] = this.cellState.TREE;
                         }
                         break;
-                    case this.cellState.EMPTY:
-                        this.cells[j][i] = this.cellState.EMPTY;
-                        break;
                     case this.cellState.ASH:
                         this.cells[j][i] = this.cellState.ASH;
+                        break;
+                    case this.cellState.EMPTY:
+                        this.cells[j][i] = this.cellState.EMPTY;
                         break;
                 }
             }
         }
     }
-
-    // prepareData() {
-    //     this.cellsOld = [];
-    //     let subArray;
-    //     for (let j = 0; j < this.size; j++) {
-    //         subArray = [];
-    //         for (let i = 0; i < this.size; i++) {
-    //             subArray.push(0);
-    //         }
-    //         this.cellsOld.push(subArray);
-    //     }
-    //     for (let j = 0; j < this.cellsOld.length; j++) {
-    //         for (let i = 0; i < this.cellsOld[j].length; i++) {
-    //             this.cellsOld[j][i] = this.cells[j][i];
-    //         }
-    //     }
-    // }
 
     getNeighboursNumber(j, i, state) {
         let numberOfNeightbours = 0;
