@@ -1,8 +1,7 @@
 export default class FF {
-    constructor(rowAndColNumber, cellSize, interval, speed = 1, p = 0.55, firemenNumber = 0) {
+    constructor(rowAndColNumber, cellSize, speed = 1, p = 0.55, firemenNumber = 0) {
         this.rowAndColNumber = rowAndColNumber;
         this.cellSize = cellSize;
-        this.interval = interval;
         this.speed = speed;
         this.p = p;
         this.firemenNumber = firemenNumber;
@@ -30,7 +29,7 @@ export default class FF {
     }
 
     init() {
-        this.timer = null;
+        this.animationFrame = null;
         this.cells = null;
         this.cellsOld = null;
         this.steps = 0;
@@ -79,13 +78,19 @@ export default class FF {
 
     run() {
         this.draw();
+
         for (let i = 0; i < this.speed; i++) {
             this.calc();
             this.steps += 1;
         }
-        this.timer = setTimeout(() => {
+
+        this.animationFrame = requestAnimationFrame(() => {
             this.run();
-        }, this.interval);
+        });
+    }
+
+    stop() {
+        cancelAnimationFrame(this.animationFrame);
     }
 
     draw() {
