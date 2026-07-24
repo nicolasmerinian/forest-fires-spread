@@ -18,8 +18,6 @@ Each cell of the grid can be in one of several states:
 * Tree
 * Burning
 * Ash
-* Firefighter *(optional)*
-* Wet ground
 
 ### Initialization
 
