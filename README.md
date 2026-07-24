@@ -52,6 +52,18 @@ This behaviour is consistent with the intuition behind **percolation theory**, a
 * Vanilla JavaScript
 * HTML5 Canvas
 
+## Running the project
+
+This project uses native ES6 modules, so it needs to be served through a local web server instead of being opened directly from the file system.
+
+To run the simulation locally:
+
+```bash
+npx serve
+```
+
+Then open the URL provided by the server (usually http://localhost:3000) in your browser.
+
 ## Notes
 
 This is a personal experiment created to explore cellular automata and emergent behaviour. The model intentionally favours simplicity over physical realism and should be viewed as a visual simulation rather than an accurate wildfire model.
