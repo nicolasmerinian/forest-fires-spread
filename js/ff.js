@@ -1,10 +1,11 @@
 export default class FF {
-    constructor(rowAndColNumber, cellSize, speed = 1, p = 0.55, firemenNumber = 0) {
+    constructor(rowAndColNumber, cellSize, p = 0.55, firemenNumber = 0, simulationSpeed) {
         this.rowAndColNumber = rowAndColNumber;
         this.cellSize = cellSize;
-        this.speed = speed;
         this.p = p;
         this.firemenNumber = firemenNumber;
+        this.simulationSpeed = simulationSpeed; // ms between calculations
+        this.lastUpdate = 0;
 
         this.createCanvas();
         this.ctx = this.canvas.getContext("2d");
@@ -76,16 +77,18 @@ export default class FF {
         }
     }
 
-    run() {
+    run(timestamp) {
         this.draw();
 
-        for (let i = 0; i < this.speed; i++) {
+        if (timestamp - this.lastUpdate >= this.simulationSpeed) {
             this.calc();
             this.steps += 1;
+
+            this.lastUpdate = timestamp;
         }
 
-        this.animationFrame = requestAnimationFrame(() => {
-            this.run();
+        this.animationFrame = requestAnimationFrame((timestamp) => {
+            this.run(timestamp);
         });
     }
 
