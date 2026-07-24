@@ -9,6 +9,7 @@ var FF = function(rowAndColNumber, cellSize, i, speed, p, firemenNumber) {
 	this.ctx = this.canvas.getContext('2d');
 	this.width = this.canvas.width;
 	this.height = this.canvas.height;
+	this.size = rowAndColNumber;
 	this.init();
 }
 
@@ -45,9 +46,9 @@ FF.prototype.initCells = function initCells() {
 	var fireman;
 	var rand;
 	
-	for (var j = 0; j < this.height / this.cellSize; j++) {
+	for (var j = 0; j < this.size; j++) {
 		subArray = [];
-		for (var i = 0; i < this.width / this.cellSize; i++) {
+		for (var i = 0; i < this.size; i++) {
 			subArray.push(0);
 		}
 		this.cells.push(subArray);
@@ -104,11 +105,11 @@ FF.prototype.clear = function clear() {
 FF.prototype.drawBoard = function drawBoard() {
 	this.ctx.strokeStyle = '#000';
 	this.ctx.beginPath();
-	for (var i = 0; i < this.width / this.cellSize; i++) {
+	for (var i = 0; i < this.size; i++) {
 		this.ctx.moveTo(i * this.cellSize, 0);
 		this.ctx.lineTo(i * this.cellSize, this.height);
 	}
-	for (var j = 0; j < this.height / this.cellSize; j++) {
+	for (var j = 0; j < this.size; j++) {
 		this.ctx.moveTo(0, j * this.cellSize);
 		this.ctx.lineTo(this.width, j * this.cellSize);
 	}
@@ -179,9 +180,9 @@ FF.prototype.calc = function calc() {
 FF.prototype.prepareData = function prepareData() {
 	this.cellsOld = [];
 	var subArray;
-	for (var j = 0; j < this.height / this.cellSize; j++) {
+	for (var j = 0; j < this.size; j++) {
 		subArray = [];
-		for (var i = 0; i < this.width / this.cellSize; i++) {
+		for (var i = 0; i < this.size; i++) {
 			subArray.push(0);
 		}
 		this.cellsOld.push(subArray);
@@ -209,7 +210,7 @@ FF.prototype.getNeighboursNumber = function getNeighboursNumber(j, i, state) {
 		}
 	}
 	// Top right
-	if (i + 1 < this.width / this.cellSize && j - 1 >= 0) {
+	if (i + 1 < this.size && j - 1 >= 0) {
 		if (this.hasState(i + 1, j - 1, state)) {
 			numberOfNeightbours += 1;
 		}
@@ -222,25 +223,25 @@ FF.prototype.getNeighboursNumber = function getNeighboursNumber(j, i, state) {
 	}
 	// No center
 	// Center right
-	if (i + 1 <= this.width / this.cellSize) {
+	if (i + 1 <= this.size) {
 		if (this.hasState(i + 1, j, state)) {
 			numberOfNeightbours += 1;
 		}
 	}
 	// Bottom left
-	if (i - 1 >= 0 && j + 1 < this.height / this.cellSize) {
+	if (i - 1 >= 0 && j + 1 < this.size) {
 		if (this.hasState(i - 1, j + 1, state)) {
 			numberOfNeightbours += 1;
 		}
 	}
 	// Bottom
-	if (j + 1 < this.height / this.cellSize) {
+	if (j + 1 < this.size) {
 		if (this.hasState(i, j + 1, state)) {
 			numberOfNeightbours += 1;
 		}
 	}
 	// Bottom right
-	if (i + 1 <= this.width / this.cellSize && j + 1 < this.height / this.cellSize) {
+	if (i + 1 <= this.size && j + 1 < this.size) {
 		if (this.hasState(i + 1, j + 1, state)) {
 			numberOfNeightbours += 1;
 		}
