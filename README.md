@@ -1,1 +1,1 @@
-# gameOfLife
+# Forest fires propagation
