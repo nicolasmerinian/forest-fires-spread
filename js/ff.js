@@ -1,7 +1,7 @@
 export default class FF {
     constructor(rowAndColNumber, cellSize, treeDensity = 0.55, simulationSpeed) {
         this.rowAndColNumber = rowAndColNumber; // number of rows and columns in the grid
-        this.cellSize = cellSize;
+        this.cellSize = cellSize; // size of each cell in pixels
         this.treeDensity = treeDensity; // probability of a cell being a tree
         this.simulationSpeed = simulationSpeed; // ms between calculations
         this.lastUpdate = 0;
@@ -30,6 +30,7 @@ export default class FF {
 
     init() {
         this.animationFrame = null;
+        this.lastUpdate = 0;
         this.cells = this.createGrid();
         this.cellsOld = this.createGrid();
         this.steps = 0;
@@ -40,46 +41,47 @@ export default class FF {
     }
 
     createGrid() {
-        const grid = [];
+        return new Uint8Array(this.size * this.size);
+    }
 
-        for (let y = 0; y < this.size; y++) {
-            grid.push(new Array(this.size).fill(0));
-        }
-
-        return grid;
+    getIndex(x, y) {
+        return y * this.size + x;
     }
 
     initCells() {
         const trees = [];
         const emptyCells = [];
 
-        for (let y = 0; y < this.cells.length; y++) {
-            for (let x = 0; x < this.cells[y].length; x++) {
+        for (let y = 0; y < this.size; y++) {
+            for (let x = 0; x < this.size; x++) {
+
+                const index = this.getIndex(x, y);
                 const rand = Math.random();
 
                 if (rand < this.treeDensity) {
-                    this.cells[y][x] = this.cellState.TREE;
+                    this.cells[index] = this.cellState.TREE;
                     trees.push({ x, y });
                 } else {
-                    this.cells[y][x] = this.cellState.EMPTY;
+                    this.cells[index] = this.cellState.EMPTY;
                     emptyCells.push({ x, y });
                 }
             }
         }
 
         const fireCell = trees[Math.floor(Math.random() * trees.length)];
-        this.cells[fireCell.y][fireCell.x] = this.cellState.FIRE;
+        if (fireCell) {
+            this.cells[this.getIndex(fireCell.x, fireCell.y)] = this.cellState.FIRE;
+        }
     }
 
     run(timestamp) {
-        this.draw();
-
         if (timestamp - this.lastUpdate >= this.simulationSpeed) {
             this.calc();
             this.steps += 1;
-
             this.lastUpdate = timestamp;
         }
+
+        this.draw();
 
         this.animationFrame = requestAnimationFrame((timestamp) => {
             this.run(timestamp);
@@ -104,24 +106,33 @@ export default class FF {
     drawBoard() {
         this.ctx.strokeStyle = '#000';
         this.ctx.beginPath();
-        for (let i = 0; i < this.size; i++) {
-            this.ctx.moveTo(i * this.cellSize, 0);
-            this.ctx.lineTo(i * this.cellSize, this.height);
+
+        for (let x = 0; x < this.size; x++) {
+            this.ctx.moveTo(x * this.cellSize, 0);
+            this.ctx.lineTo(x * this.cellSize, this.height);
         }
-        for (let j = 0; j < this.size; j++) {
-            this.ctx.moveTo(0, j * this.cellSize);
-            this.ctx.lineTo(this.width, j * this.cellSize);
+
+        for (let y = 0; y < this.size; y++) {
+            this.ctx.moveTo(0, y * this.cellSize);
+            this.ctx.lineTo(this.width, y * this.cellSize);
         }
+        
         this.ctx.closePath();
         this.ctx.stroke();
     }
 
     drawCells() {
-        let currentCellValue;
-        for (let j = 0; j < this.cells.length; j++) {
-            for (let i = 0; i < this.cells[j].length; i++) {
-                currentCellValue = this.cells[j][i];
-                this.drawCell(i, j, this.cellColor[currentCellValue]);
+        for (let y = 0; y < this.size; y++) {
+            for (let x = 0; x < this.size; x++) {
+
+                const index = this.getIndex(x, y);
+                const currentCellValue = this.cells[index];
+
+                this.drawCell(
+                    x,
+                    y,
+                    this.cellColor[currentCellValue]
+                );
             }
         }
     }
@@ -140,91 +151,96 @@ export default class FF {
 
         [this.cells, this.cellsOld] = [this.cellsOld, this.cells];
 
-        for (let j = 0; j < this.cellsOld.length; j++) {
-            for (let i = 0; i < this.cellsOld[j].length; i++) {
-                fireNeightboursNumber = this.getNeighboursNumber(j, i, this.cellState.FIRE);
-                treeNeightboursNumber = this.getNeighboursNumber(j, i, this.cellState.TREE);
-                currentCellState = this.cellsOld[j][i];
+        for (let y = 0; y < this.size; y++) {
+            for (let x = 0; x < this.size; x++) {
+
+                const index = this.getIndex(x, y);
+
+                currentCellState = this.cellsOld[index];
+                fireNeightboursNumber = this.getNeighboursNumber(x, y, this.cellState.FIRE);
+                treeNeightboursNumber = this.getNeighboursNumber(x, y, this.cellState.TREE);
 
                 switch (currentCellState) {
                     case this.cellState.FIRE:
-                        this.cells[j][i] = this.cellState.ASH;
+                        this.cells[this.getIndex(x, y)] = this.cellState.ASH;
                         break;
                     case this.cellState.TREE:
                         if (fireNeightboursNumber !== 0) {
-                            this.cells[j][i] = this.cellState.FIRE;
+                            this.cells[index] = this.cellState.FIRE;
                         } else {
-                            this.cells[j][i] = this.cellState.TREE;
+                            this.cells[index] = this.cellState.TREE;
                         }
                         break;
                     case this.cellState.ASH:
-                        this.cells[j][i] = this.cellState.ASH;
+                        this.cells[index] = this.cellState.ASH;
                         break;
                     case this.cellState.EMPTY:
-                        this.cells[j][i] = this.cellState.EMPTY;
+                        this.cells[index] = this.cellState.EMPTY;
                         break;
+                    default:
+                        this.cells[index] = currentCellState;
                 }
             }
         }
     }
 
-    getNeighboursNumber(j, i, state) {
+    getNeighboursNumber(x, y, state) {
         let numberOfNeightbours = 0;
         let neightbourValue;
+
         // Top left
-        if (i - 1 >= 0 && j - 1 >= 0) {
-            if (this.hasState(i - 1, j - 1, state)) {
+        if (x - 1 >= 0 && y - 1 >= 0) {
+            if (this.hasState(x - 1, y - 1, state)) {
                 numberOfNeightbours += 1;
             }
         }
         // Top
-        if (j - 1 >= 0) {
-            if (this.hasState(i, j - 1, state)) {
+        if (y - 1 >= 0) {
+            if (this.hasState(x, y - 1, state)) {
                 numberOfNeightbours += 1;
             }
         }
         // Top right
-        if (i + 1 < this.size && j - 1 >= 0) {
-            if (this.hasState(i + 1, j - 1, state)) {
+        if (x + 1 < this.size && y - 1 >= 0) {
+            if (this.hasState(x + 1, y - 1, state)) {
                 numberOfNeightbours += 1;
             }
         }
         // Center left
-        if (i - 1 >= 0) {
-            if (this.hasState(i - 1, j, state)) {
+        if (x - 1 >= 0) {
+            if (this.hasState(x - 1, y, state)) {
                 numberOfNeightbours += 1;
             }
         }
         // No center
         // Center right
-        if (i + 1 <= this.size) {
-            if (this.hasState(i + 1, j, state)) {
+        if (x + 1 < this.size) {
+            if (this.hasState(x + 1, y, state)) {
                 numberOfNeightbours += 1;
             }
         }
         // Bottom left
-        if (i - 1 >= 0 && j + 1 < this.size) {
-            if (this.hasState(i - 1, j + 1, state)) {
+        if (x - 1 >= 0 && y + 1 < this.size) {
+            if (this.hasState(x - 1, y + 1, state)) {
                 numberOfNeightbours += 1;
             }
         }
         // Bottom
-        if (j + 1 < this.size) {
-            if (this.hasState(i, j + 1, state)) {
+        if (y + 1 < this.size) {
+            if (this.hasState(x, y + 1, state)) {
                 numberOfNeightbours += 1;
             }
         }
         // Bottom right
-        if (i + 1 <= this.size && j + 1 < this.size) {
-            if (this.hasState(i + 1, j + 1, state)) {
+        if (x + 1 < this.size && y + 1 < this.size) {
+            if (this.hasState(x + 1, y + 1, state)) {
                 numberOfNeightbours += 1;
             }
         }
         return numberOfNeightbours;
     }
 
-    hasState(i, j, state) {
-        const cellValue = this.cellsOld[j][i];
-        return cellValue === state;
+    hasState(x, y, state) {
+        return this.cellsOld[this.getIndex(x, y)] === state;
     }
 }
