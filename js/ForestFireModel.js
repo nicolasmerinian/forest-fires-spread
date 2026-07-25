@@ -7,11 +7,15 @@ export default class ForestFireModel {
             EMPTY: 0,
             ASH: 1,
             FIRE: 2,
-            TREE: 3
+            TREE: 3,
+            SHRUB: 4,
+            GRASS: 5
         };
 
         this.cellFuel = {
-            TREE: 3
+            TREE: 20,
+            SHRUB: 5,
+            GRASS: 2
         }
 
         this.cells = this.createGrid();
@@ -35,9 +39,10 @@ export default class ForestFireModel {
         for (let y = 0; y < this.size; y++) {
             for (let x = 0; x < this.size; x++) {
                 const index = this.getIndex(x, y);
+                const vegetationType = this.getRandomVegetationType();
 
                 if (Math.random() < this.treeDensity) {
-                    this.cells[index] = this.cellState.TREE;
+                    this.cells[index] = vegetationType;
                     trees.push({ x, y });
                 }
             }
@@ -85,6 +90,26 @@ export default class ForestFireModel {
                             this.cells[index] = this.cellState.TREE;
                         }
                         break;
+
+                    case this.cellState.SHRUB:
+                        if (this.hasFireNeighbour(x, y)) {
+                            this.cells[index] = this.cellState.FIRE;
+                            this.fuel[index] = this.cellFuel.SHRUB;
+                        }
+                        else {
+                            this.cells[index] = this.cellState.SHRUB;
+                        }
+                        break;
+
+                    case this.cellState.GRASS:
+                        if (this.hasFireNeighbour(x, y)) {
+                            this.cells[index] = this.cellState.FIRE;
+                            this.fuel[index] = this.cellFuel.GRASS;
+                        }
+                        else {
+                            this.cells[index] = this.cellState.GRASS;
+                        }
+                        break;
                 }
             }
         }
@@ -129,6 +154,17 @@ export default class ForestFireModel {
 
     hasState(x, y, state) {
         return this.cellsOld[this.getIndex(x, y)] === state;
+    }
+
+    getRandomVegetationType() {
+        const rand = Math.random();
+        if (rand < 0.3) {
+            return this.cellState.TREE;
+        } else if (rand < 0.6) {
+            return this.cellState.SHRUB;
+        } else {
+            return this.cellState.GRASS;
+        }
     }
 
 }

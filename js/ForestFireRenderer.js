@@ -6,10 +6,12 @@ export default class ForestFireRenderer {
         this.createCanvas();
 
         this.colors = [
-            "#000",     // empty
-            "#422b24",  // ash
-            "#F50",     // fire
-            "#5D2",     // tree
+            "#000",         // empty
+            "#422b24",      // ash
+            "#F50",         // fire
+            "#147216",      // tree
+            "#9bb71d",      // shrub
+            "#90EE90",      // grass
         ];
     }
 
