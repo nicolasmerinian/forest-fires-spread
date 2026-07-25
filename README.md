@@ -74,6 +74,8 @@ This behaviour is consistent with the intuition behind **percolation theory**, a
 
 ![](/screens/result.png)
 
+![](/screens/animated-fire.gif)
+
 ## Technologies
 
 * Vanilla JavaScript (ES6 modules)
