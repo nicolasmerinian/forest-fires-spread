@@ -8,7 +8,7 @@ export default class ForestFireRenderer {
         this.colors = [
             "#000", // empty
             "#5D2", // tree
-            "#521", // ash
+            "#422b24", // ash
             "#F50"  // fire
         ];
     }
