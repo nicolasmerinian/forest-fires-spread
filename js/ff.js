@@ -116,7 +116,7 @@ export default class FF {
             this.ctx.moveTo(0, y * this.cellSize);
             this.ctx.lineTo(this.width, y * this.cellSize);
         }
-        
+
         this.ctx.closePath();
         this.ctx.stroke();
     }
@@ -185,59 +185,31 @@ export default class FF {
     }
 
     getNeighboursNumber(x, y, state) {
-        let numberOfNeightbours = 0;
-        let neightbourValue;
+        const directions = [
+            [-1, -1], [0, -1], [1, -1],
+            [-1, 0], [1, 0],
+            [-1, 1], [0, 1], [1, 1]
+        ];
 
-        // Top left
-        if (x - 1 >= 0 && y - 1 >= 0) {
-            if (this.hasState(x - 1, y - 1, state)) {
-                numberOfNeightbours += 1;
+        let numberOfNeighbours = 0;
+
+        for (const [dx, dy] of directions) {
+            const neighbourX = x + dx;
+            const neighbourY = y + dy;
+
+            if (
+                neighbourX >= 0 &&
+                neighbourX < this.size &&
+                neighbourY >= 0 &&
+                neighbourY < this.size
+            ) {
+                if (this.hasState(neighbourX, neighbourY, state)) {
+                    numberOfNeighbours += 1;
+                }
             }
         }
-        // Top
-        if (y - 1 >= 0) {
-            if (this.hasState(x, y - 1, state)) {
-                numberOfNeightbours += 1;
-            }
-        }
-        // Top right
-        if (x + 1 < this.size && y - 1 >= 0) {
-            if (this.hasState(x + 1, y - 1, state)) {
-                numberOfNeightbours += 1;
-            }
-        }
-        // Center left
-        if (x - 1 >= 0) {
-            if (this.hasState(x - 1, y, state)) {
-                numberOfNeightbours += 1;
-            }
-        }
-        // No center
-        // Center right
-        if (x + 1 < this.size) {
-            if (this.hasState(x + 1, y, state)) {
-                numberOfNeightbours += 1;
-            }
-        }
-        // Bottom left
-        if (x - 1 >= 0 && y + 1 < this.size) {
-            if (this.hasState(x - 1, y + 1, state)) {
-                numberOfNeightbours += 1;
-            }
-        }
-        // Bottom
-        if (y + 1 < this.size) {
-            if (this.hasState(x, y + 1, state)) {
-                numberOfNeightbours += 1;
-            }
-        }
-        // Bottom right
-        if (x + 1 < this.size && y + 1 < this.size) {
-            if (this.hasState(x + 1, y + 1, state)) {
-                numberOfNeightbours += 1;
-            }
-        }
-        return numberOfNeightbours;
+
+        return numberOfNeighbours;
     }
 
     hasState(x, y, state) {
