@@ -18,6 +18,18 @@ export default class ForestFireModel {
             GRASS: 2
         }
 
+        this.directions = {
+            NORTH: { x: 0, y: -1 },
+            EAST: { x: 1, y: 0 },
+            SOUTH: { x: 0, y: 1 },
+            WEST: { x: -1, y: 0 }
+        };
+
+        this.wind = {
+            direction: this.directions.EAST,
+            strength: 0.9
+        }
+
         this.cells = this.createGrid();
         this.cellsOld = this.createGrid();
         this.fuel = this.createGrid();
@@ -75,14 +87,14 @@ export default class ForestFireModel {
                         if (this.fuel[index] > 0) {
                             this.fuel[index] -= 1;
                             this.cells[index] = this.cellState.FIRE;
-                        } 
+                        }
                         else {
                             this.cells[index] = this.cellState.ASH;
                         }
                         break;
 
                     case this.cellState.TREE:
-                        if (this.hasFireNeighbour(x, y)) {
+                        if (this.canCatchFire(x, y)) {
                             this.cells[index] = this.cellState.FIRE;
                             this.fuel[index] = this.cellFuel.TREE;
                         }
@@ -92,7 +104,7 @@ export default class ForestFireModel {
                         break;
 
                     case this.cellState.SHRUB:
-                        if (this.hasFireNeighbour(x, y)) {
+                        if (this.canCatchFire(x, y)) {
                             this.cells[index] = this.cellState.FIRE;
                             this.fuel[index] = this.cellFuel.SHRUB;
                         }
@@ -102,7 +114,7 @@ export default class ForestFireModel {
                         break;
 
                     case this.cellState.GRASS:
-                        if (this.hasFireNeighbour(x, y)) {
+                        if (this.canCatchFire(x, y)) {
                             this.cells[index] = this.cellState.FIRE;
                             this.fuel[index] = this.cellFuel.GRASS;
                         }
@@ -167,4 +179,76 @@ export default class ForestFireModel {
         }
     }
 
+    getFireNeighbours(x, y) {
+        const directions = [
+            [-1, -1], [0, -1], [1, -1],
+            [-1, 0], [1, 0],
+            [-1, 1], [0, 1], [1, 1]
+        ];
+
+        const fireNeighbours = [];
+
+        for (const [dx, dy] of directions) {
+            const neighbourX = x + dx;
+            const neighbourY = y + dy;
+
+            if (
+                neighbourX >= 0 &&
+                neighbourX < this.size &&
+                neighbourY >= 0 &&
+                neighbourY < this.size
+            ) {
+                if (this.hasState(
+                    neighbourX,
+                    neighbourY,
+                    this.cellState.FIRE
+                )) {
+                    fireNeighbours.push({
+                        x: neighbourX,
+                        y: neighbourY
+                    });
+                }
+            }
+        }
+
+        return fireNeighbours;
+    }
+
+    canCatchFire(x, y) {
+        const fireNeighbours = this.getFireNeighbours(x, y);
+
+        if (fireNeighbours.length === 0) {
+            return false;
+        }
+
+        const probability = fireNeighbours.reduce(
+            (chance, fire) =>
+                chance * this.getWindEffect(
+                    fire.x,
+                    fire.y,
+                    x,
+                    y
+                ),
+            1
+        );
+
+        return Math.random() < probability;
+    }
+
+    getWindEffect(fireX, fireY, targetX, targetY) {
+        const dx = targetX - fireX;
+        const dy = targetY - fireY;
+
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        const directionX = dx / distance;
+        const directionY = dy / distance;
+
+        const alignment =
+            directionX * this.wind.direction.x +
+            directionY * this.wind.direction.y;
+
+        // entre 0.1 et 1.0
+        return 0.1 + ((alignment + 1) / 2) * this.wind.strength;
+    }
 }

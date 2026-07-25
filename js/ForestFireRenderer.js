@@ -54,7 +54,16 @@ export default class ForestFireRenderer {
             }
         }
 
-        this.renderTimeElapsed();
+        // Render the HUD
+        const HUDParams = {
+            x: 5,
+            y: 5,
+            width: 110,
+            height: 68,
+            padding: 8,
+            fontSize: 20
+        };
+        this.renderHUD(HUDParams);
 
         this.step += 1;
     }
@@ -69,31 +78,57 @@ export default class ForestFireRenderer {
         );
     }
 
-    renderTimeElapsed() {
-        const timeElapsed = this.step * 0.03;
-
-        const text = `Time: ${timeElapsed.toFixed(1)}h`;
-
-        this.ctx.font = "24px Arial";
-
+    renderHUD({ x, y, width, height, padding, fontSize }) {
         // Background
-        const padding = 8;
-        const textWidth = this.ctx.measureText(text).width;
-
-        this.ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        this.ctx.fillStyle = "rgba(255, 255, 255, 0.8)"; // semi-transparent white
         this.ctx.fillRect(
-            5,
-            5,
-            textWidth + padding * 2,
-            34
+            x,
+            y,
+            width + padding * 2,
+            height
         );
+
+        this.ctx.font = `${fontSize}px Arial`;
+
+        // Elapsed Time
+        this.renderTimeElapsed(x, y, padding);
+
+        // Wind direction and strength
+        this.renderWindInfo(x, y, padding);
+    }
+
+    renderTimeElapsed(x, y, padding) {
+        const timeElapsed = this.step * 0.03;
+        const text = `Time: ${timeElapsed.toFixed(1)}h`;
+        const textWidth = this.ctx.measureText(text).width;
 
         // Text
         this.ctx.fillStyle = "#000";
         this.ctx.fillText(
             text,
-            5 + padding,
-            30
+            x + padding,
+            y + 25
+        );
+    }
+
+    renderWindInfo(x, y, padding) {
+        const wind = this.model.wind;
+        const arrow = {
+            EAST: "→",
+            WEST: "←",
+            NORTH: "↑",
+            SOUTH: "↓"
+        }
+        const windDirection = arrow[Object.keys(this.model.directions).find(key => this.model.directions[key] === wind.direction)];
+
+        const text = `Wind: ${wind.strength} ${windDirection}`;
+
+        // Text
+        this.ctx.fillStyle = "#000";
+        this.ctx.fillText(
+            text,
+            x + padding,
+            y + 55
         );
     }
 }
