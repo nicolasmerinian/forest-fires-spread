@@ -72,6 +72,8 @@ As the density increases, larger connected clusters of trees appear, allowing fi
 
 This behaviour is consistent with the intuition behind **percolation theory**, although the exact threshold depends on the model's rules and should not be interpreted as a scientific measurement.
 
+![](/screens/result.png)
+
 ## Technologies
 
 * Vanilla JavaScript (ES6 modules)
