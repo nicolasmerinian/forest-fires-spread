@@ -5,13 +5,18 @@ export default class ForestFireModel {
 
         this.cellState = {
             EMPTY: 0,
-            TREE: 1,
-            ASH: 2,
-            FIRE: 3
+            ASH: 1,
+            FIRE: 2,
+            TREE: 3
         };
+
+        this.cellFuel = {
+            TREE: 3
+        }
 
         this.cells = this.createGrid();
         this.cellsOld = this.createGrid();
+        this.fuel = this.createGrid();
 
         this.initCells();
     }
@@ -39,8 +44,9 @@ export default class ForestFireModel {
         }
 
         const fire = trees[Math.floor(Math.random() * trees.length)];
-
-        this.cells[this.getIndex(fire.x, fire.y)] = this.cellState.FIRE;
+        const index = this.getIndex(fire.x, fire.y);
+        this.cells[index] = this.cellState.FIRE;
+        this.fuel[index] = this.cellFuel.TREE;
     }
 
     update() {
@@ -52,23 +58,32 @@ export default class ForestFireModel {
                 const state = this.cellsOld[index];
 
                 switch (state) {
-                    case this.cellState.FIRE:
-                        this.cells[index] = this.cellState.ASH;
-                        break;
-
-                    case this.cellState.TREE:
-                        this.cells[index] =
-                            this.hasFireNeighbour(x, y)
-                                ? this.cellState.FIRE
-                                : this.cellState.TREE;
-                        break;
-
                     case this.cellState.ASH:
                         this.cells[index] = this.cellState.ASH;
                         break;
 
                     case this.cellState.EMPTY:
                         this.cells[index] = this.cellState.EMPTY;
+                        break;
+
+                    case this.cellState.FIRE:
+                        if (this.fuel[index] > 0) {
+                            this.fuel[index] -= 1;
+                            this.cells[index] = this.cellState.FIRE;
+                        } 
+                        else {
+                            this.cells[index] = this.cellState.ASH;
+                        }
+                        break;
+
+                    case this.cellState.TREE:
+                        if (this.hasFireNeighbour(x, y)) {
+                            this.cells[index] = this.cellState.FIRE;
+                            this.fuel[index] = this.cellFuel.TREE;
+                        }
+                        else {
+                            this.cells[index] = this.cellState.TREE;
+                        }
                         break;
                 }
             }
