@@ -13,10 +13,22 @@ export default class ForestFireModel {
             GRASS: 5
         };
 
-        this.cellFuel = {
-            [this.cellState.TREE]: 20,
-            [this.cellState.SHRUB]: 5,
-            [this.cellState.GRASS]: 1
+        this.cellTypes = {
+            [this.cellState.TREE]: {
+                name: "TREE",
+                fuel: 20,
+                spottingFactor: 0.5 // A burning tree is more likely than burning grass to produce firebrands that ignite spot fires
+            },
+            [this.cellState.SHRUB]: {
+                name: "SHRUB",
+                fuel: 5,
+                spottingFactor: 0.15
+            },
+            [this.cellState.GRASS]: {
+                name: "GRASS",
+                fuel: 1,
+                spottingFactor: 0.01
+            }
         };
 
         this.directions = {
@@ -28,12 +40,13 @@ export default class ForestFireModel {
 
         this.wind = {
             direction: this.directions.EAST,
-            strength: 0.9
+            strength: 0.5 // between 0 and 1
         }
 
         this.cells = this.createGrid();
         this.cellsOld = this.createGrid();
         this.fuel = this.createGrid();
+        this.fuelType = this.createGrid();
 
         this.initCells();
     }
@@ -64,7 +77,7 @@ export default class ForestFireModel {
         const fire = trees[Math.floor(Math.random() * trees.length)];
         const index = this.getIndex(fire.x, fire.y);
         this.cells[index] = this.cellState.FIRE;
-        this.fuel[index] = this.cellFuel.TREE;
+        this.fuel[index] = this.cellTypes[this.cellState.GRASS].fuel; // Start with grass fuel for the initial fire
     }
 
     update() {
@@ -93,15 +106,19 @@ export default class ForestFireModel {
                         else {
                             this.cells[index] = this.cellState.ASH;
                         }
-
-                        this.createFireSpotting(x, y);
+                        
+                        const burningType = this.cellTypes[this.fuelType[index]];
+                        if (burningType) {
+                            this.createFireSpotting(x, y, burningType);
+                        }
 
                         break;
 
                     case this.cellState.TREE:
                         if (this.canCatchFire(x, y)) {
                             this.cells[index] = this.cellState.FIRE;
-                            this.fuel[index] = this.cellFuel.TREE;
+                            this.fuel[index] = this.cellTypes[this.cellState.TREE].fuel;
+                            this.fuelType[index] = this.cellState.TREE;
                         }
                         else {
                             this.cells[index] = this.cellState.TREE;
@@ -111,7 +128,8 @@ export default class ForestFireModel {
                     case this.cellState.SHRUB:
                         if (this.canCatchFire(x, y)) {
                             this.cells[index] = this.cellState.FIRE;
-                            this.fuel[index] = this.cellFuel.SHRUB;
+                            this.fuel[index] = this.cellTypes[this.cellState.SHRUB].fuel;
+                            this.fuelType[index] = this.cellState.SHRUB;
                         }
                         else {
                             this.cells[index] = this.cellState.SHRUB;
@@ -121,7 +139,8 @@ export default class ForestFireModel {
                     case this.cellState.GRASS:
                         if (this.canCatchFire(x, y)) {
                             this.cells[index] = this.cellState.FIRE;
-                            this.fuel[index] = this.cellFuel.GRASS;
+                            this.fuel[index] = this.cellTypes[this.cellState.GRASS].fuel;
+                            this.fuelType[index] = this.cellState.GRASS;
                         }
                         else {
                             this.cells[index] = this.cellState.GRASS;
@@ -263,14 +282,14 @@ export default class ForestFireModel {
     }
 
     // Spotting effect: If the wind is strong and the cell is on fire, it can ignite a random cell in the wind direction
-    createFireSpotting(x, y) {
+    createFireSpotting(x, y, type) {
         // Only create fire spotting if the wind is strong enough
         if (this.wind.strength <= 0.5) {
             return;
         }
 
         // Randomly determine whether to the fire spotting occurs based on wind strength
-        const spottingProbability = this.wind.strength * 0.2;
+        const spottingProbability = this.wind.strength * type.spottingFactor;
         if (Math.random() > spottingProbability) {
             return;
         }
@@ -298,7 +317,7 @@ export default class ForestFireModel {
                 // Ignite the target cell
                 this.newFires.push({
                     index: targetIndex,
-                    fuel: this.cellFuel[targetState]
+                    fuel: this.cellTypes[targetState].fuel
                 });
             }
         }
