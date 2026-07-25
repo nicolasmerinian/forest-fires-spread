@@ -2,6 +2,7 @@ export default class ForestFireModel {
     constructor(size, treeDensity = 0.55) {
         this.size = size;
         this.treeDensity = treeDensity;
+        this.newFires = [];
 
         this.cellState = {
             EMPTY: 0,
@@ -13,10 +14,10 @@ export default class ForestFireModel {
         };
 
         this.cellFuel = {
-            TREE: 20,
-            SHRUB: 5,
-            GRASS: 2
-        }
+            [this.cellState.TREE]: 20,
+            [this.cellState.SHRUB]: 5,
+            [this.cellState.GRASS]: 1
+        };
 
         this.directions = {
             NORTH: { x: 0, y: -1 },
@@ -68,6 +69,7 @@ export default class ForestFireModel {
 
     update() {
         [this.cells, this.cellsOld] = [this.cellsOld, this.cells];
+        this.newFires = [];
 
         for (let y = 0; y < this.size; y++) {
             for (let x = 0; x < this.size; x++) {
@@ -91,6 +93,9 @@ export default class ForestFireModel {
                         else {
                             this.cells[index] = this.cellState.ASH;
                         }
+
+                        this.createFireSpotting(x, y);
+
                         break;
 
                     case this.cellState.TREE:
@@ -125,6 +130,12 @@ export default class ForestFireModel {
                 }
             }
         }
+
+        // Update the new fires after processing all cells
+        for (const fire of this.newFires) {
+            this.cells[fire.index] = this.cellState.FIRE;
+            this.fuel[fire.index] = fire.fuel;
+        }
     }
 
     hasFireNeighbour(x, y) {
@@ -134,7 +145,6 @@ export default class ForestFireModel {
             this.cellState.FIRE
         ) > 0;
     }
-
 
     getNeighboursNumber(x, y, state) {
         const directions = [
@@ -250,5 +260,47 @@ export default class ForestFireModel {
 
         // entre 0.1 et 1.0
         return 0.1 + ((alignment + 1) / 2) * this.wind.strength;
+    }
+
+    // Spotting effect: If the wind is strong and the cell is on fire, it can ignite a random cell in the wind direction
+    createFireSpotting(x, y) {
+        // Only create fire spotting if the wind is strong enough
+        if (this.wind.strength <= 0.5) {
+            return;
+        }
+
+        // Randomly determine whether to the fire spotting occurs based on wind strength
+        const spottingProbability = this.wind.strength * 0.2;
+        if (Math.random() > spottingProbability) {
+            return;
+        }
+
+        // Randomly determine the distance for spotting based on wind strength
+        const distance = Math.floor(Math.random() * this.wind.strength * 10) + 1;
+
+        // Calculate the target cell in the wind direction
+        const fireX = x + this.wind.direction.x * distance;
+        const fireY = y + this.wind.direction.y * distance;
+
+        // Check if the target cell is within bounds and is a tree, shrub, or grass
+        if (
+            fireX >= 0 && fireX < this.size &&
+            fireY >= 0 && fireY < this.size
+        ) {
+            const targetIndex = this.getIndex(fireX, fireY);
+
+            if (this.cellsOld[targetIndex] === this.cellState.TREE ||
+                this.cellsOld[targetIndex] === this.cellState.SHRUB ||
+                this.cellsOld[targetIndex] === this.cellState.GRASS
+            ) {
+                const targetState = this.cellsOld[targetIndex];
+
+                // Ignite the target cell
+                this.newFires.push({
+                    index: targetIndex,
+                    fuel: this.cellFuel[targetState]
+                });
+            }
+        }
     }
 }
