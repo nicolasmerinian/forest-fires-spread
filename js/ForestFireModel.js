@@ -22,11 +22,11 @@ export default class ForestFireModel {
             [this.cellState.SHRUB]: {
                 name: "SHRUB",
                 fuel: 5,
-                spottingFactor: 0.15
+                spottingFactor: 0.1
             },
             [this.cellState.GRASS]: {
                 name: "GRASS",
-                fuel: 1,
+                fuel: 2,
                 spottingFactor: 0.01
             }
         };
