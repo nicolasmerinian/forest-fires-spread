@@ -12,7 +12,7 @@ The goal of this project was to observe this phenomenon by varying the initial p
 
 ## Rules
 
-Each cell of the grid can be in one of several states:
+Each cell of the grid can be in one of the following states:
 
 * Empty
 * Tree
@@ -21,10 +21,9 @@ Each cell of the grid can be in one of several states:
 
 ### Initialization
 
-* Each cell becomes a tree with probability `p`.
+* Each cell becomes a tree with probability `treeDensity`.
 * Otherwise it starts empty.
 * One random tree is ignited.
-* A configurable number of firefighters can also be placed randomly.
 
 ### Simulation
 
@@ -32,16 +31,42 @@ At each step:
 
 * A burning tree becomes ash.
 * Any tree adjacent to at least one burning tree catches fire.
-* Firefighters extinguish nearby fires according to simple neighbourhood rules.
-* Wet cells eventually become empty.
+* Empty cells remain empty.
+* Ash cells remain unchanged.
 
-The simulation uses the Moore neighbourhood (8 surrounding cells).
+The simulation uses the **Moore neighbourhood**, meaning that each cell considers its 8 surrounding neighbours.
+
+## Architecture
+
+The project is split into two main components:
+
+### ForestFireModel
+
+Responsible for the simulation logic:
+
+* Grid creation and initialization
+* Cell states management
+* Fire propagation rules
+* Neighbour detection
+* Simulation updates
+
+The model is independent from the rendering system, making the simulation logic easier to test and modify.
+
+### ForestFireRenderer
+
+Responsible for the visual representation:
+
+* Canvas creation
+* Grid rendering
+* Cell colouring
+
+The renderer only displays the current state of the model and does not contain simulation logic.
 
 ## Result
 
 Although this is a simplified model, it reproduces an interesting qualitative behaviour.
 
-For low values of `p`, fires generally die out quickly because the forest is too sparse to sustain propagation.
+For low values of `treeDensity`, fires generally die out quickly because the forest is too sparse to sustain propagation.
 
 As the density increases, larger connected clusters of trees appear, allowing fires to travel much farther. Around a density of approximately **0.55**, the simulation begins to exhibit a transition where fires are much more likely to spread across a significant portion of the forest.
 
@@ -49,8 +74,9 @@ This behaviour is consistent with the intuition behind **percolation theory**, a
 
 ## Technologies
 
-* Vanilla JavaScript
+* Vanilla JavaScript (ES6 modules)
 * HTML5 Canvas
+* TypedArrays (`Uint8Array`) for efficient grid storage
 
 ## Running the project
 
@@ -66,4 +92,6 @@ Then open the URL provided by the server (usually http://localhost:3000) in your
 
 ## Notes
 
-This is a personal experiment created to explore cellular automata and emergent behaviour. The model intentionally favours simplicity over physical realism and should be viewed as a visual simulation rather than an accurate wildfire model.
+This is a personal experiment created to explore cellular automata, emergent behaviour and simulation architecture.
+
+The model intentionally favours simplicity over physical realism and should be viewed as a visual experiment rather than an accurate wildfire prediction model.
