@@ -2,6 +2,7 @@ export default class ForestFireRenderer {
     constructor(model, cellSize) {
         this.model = model;
         this.cellSize = cellSize;
+        this.step = 0;
 
         this.createCanvas();
 
@@ -52,6 +53,10 @@ export default class ForestFireRenderer {
                 );
             }
         }
+
+        this.renderTimeElapsed();
+
+        this.step += 1;
     }
 
     clear() {
@@ -61,6 +66,34 @@ export default class ForestFireRenderer {
             0,
             this.canvas.width,
             this.canvas.height
+        );
+    }
+
+    renderTimeElapsed() {
+        const timeElapsed = this.step * 0.03;
+
+        const text = `Time: ${timeElapsed.toFixed(1)}h`;
+
+        this.ctx.font = "24px Arial";
+
+        // Background
+        const padding = 8;
+        const textWidth = this.ctx.measureText(text).width;
+
+        this.ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        this.ctx.fillRect(
+            5,
+            5,
+            textWidth + padding * 2,
+            34
+        );
+
+        // Text
+        this.ctx.fillStyle = "#000";
+        this.ctx.fillText(
+            text,
+            5 + padding,
+            30
         );
     }
 }
