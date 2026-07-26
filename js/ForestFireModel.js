@@ -113,6 +113,11 @@ export default class ForestFireModel {
                         const burningType = this.cellTypes[this.fuelType[index]];
                         if (burningType) {
                             this.createFireSpotting(x, y, burningType);
+
+                            // Introduce a random chance for a second fire spotting to occur
+                            if (Math.random() > 0.5) {
+                                this.createFireSpotting(x, y, burningType);
+                            }
                         }
 
                         break;
@@ -303,10 +308,13 @@ export default class ForestFireModel {
 
         // Randomly determine the distance for spotting based on wind strength
         const distance = Math.floor(Math.random() * this.wind.strength * 10) + 1;
+        
+        // Introduce a random spread to the fire spotting to make it less predictable
+        const spread = Math.floor(Math.random() * 3) - 1;
 
         // Calculate the target cell in the wind direction
-        const fireX = x + this.wind.direction.x * distance;
-        const fireY = y + this.wind.direction.y * distance;
+        const fireX = x + this.wind.direction.x * distance + spread;
+        const fireY = y + this.wind.direction.y * distance + spread;
 
         // Check if the target cell is within bounds and is a tree, shrub, or grass
         if (
