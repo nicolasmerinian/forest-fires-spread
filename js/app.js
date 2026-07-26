@@ -14,6 +14,7 @@ const renderer = new ForestFireRenderer(
 );
 
 let lastUpdate = 0;
+let animationFrameId = null;
 
 function loop(timestamp) {
 
@@ -24,7 +25,15 @@ function loop(timestamp) {
 
     renderer.render();
 
-    requestAnimationFrame(loop);
+    
+    if (model.isFinished()) {
+        // No more fires to spread
+        cancelAnimationFrame(animationFrameId);
+        return;
+        
+    }
+
+    animationFrameId = requestAnimationFrame(loop);
 }
 
 requestAnimationFrame(loop);

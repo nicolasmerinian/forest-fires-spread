@@ -47,6 +47,7 @@ export default class ForestFireModel {
         this.cellsOld = this.createGrid();
         this.fuel = this.createGrid();
         this.fuelType = this.createGrid();
+        this.fireCount = 0;
 
         this.initCells();
     }
@@ -78,6 +79,7 @@ export default class ForestFireModel {
         const index = this.getIndex(fire.x, fire.y);
         this.cells[index] = this.cellState.FIRE;
         this.fuel[index] = this.cellTypes[this.cellState.GRASS].fuel; // Start with grass fuel for the initial fire
+        this.fireCount += 1;
     }
 
     update() {
@@ -105,6 +107,7 @@ export default class ForestFireModel {
                         }
                         else {
                             this.cells[index] = this.cellState.ASH;
+                            this.fireCount -= 1;
                         }
                         
                         const burningType = this.cellTypes[this.fuelType[index]];
@@ -119,6 +122,7 @@ export default class ForestFireModel {
                             this.cells[index] = this.cellState.FIRE;
                             this.fuel[index] = this.cellTypes[this.cellState.TREE].fuel;
                             this.fuelType[index] = this.cellState.TREE;
+                            this.fireCount += 1;
                         }
                         else {
                             this.cells[index] = this.cellState.TREE;
@@ -130,6 +134,7 @@ export default class ForestFireModel {
                             this.cells[index] = this.cellState.FIRE;
                             this.fuel[index] = this.cellTypes[this.cellState.SHRUB].fuel;
                             this.fuelType[index] = this.cellState.SHRUB;
+                            this.fireCount += 1;
                         }
                         else {
                             this.cells[index] = this.cellState.SHRUB;
@@ -141,6 +146,7 @@ export default class ForestFireModel {
                             this.cells[index] = this.cellState.FIRE;
                             this.fuel[index] = this.cellTypes[this.cellState.GRASS].fuel;
                             this.fuelType[index] = this.cellState.GRASS;
+                            this.fireCount += 1;
                         }
                         else {
                             this.cells[index] = this.cellState.GRASS;
@@ -154,6 +160,7 @@ export default class ForestFireModel {
         for (const fire of this.newFires) {
             this.cells[fire.index] = this.cellState.FIRE;
             this.fuel[fire.index] = fire.fuel;
+            this.fireCount += 1;
         }
     }
 
@@ -321,5 +328,9 @@ export default class ForestFireModel {
                 });
             }
         }
+    }
+
+    isFinished() {
+        return this.fireCount === 0;
     }
 }
