@@ -7,7 +7,7 @@ export default {
         }
     },
     forest: {
-        treeDensity: 0.45 // default and threshold: 0.55 (probability of a cell being a tree)
+        treeDensity: 0.55 // default and threshold: 0.55 (probability of a cell being a tree)
     },
     simulation: {
         gridSize: 100, // default : 100 (number of rows and columns in the grid)

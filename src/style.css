@@ -1,0 +1,74 @@
+body {
+    background-color: #000;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+.controls_panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 0 1rem;
+    background-color: #1e1e1e;
+    color: #F0F0F0;
+}
+
+.controls_panel .controls_section {
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+    width: 100%;
+}
+
+.buttons_panel button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #2c662e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.buttons_panel button:first-child {
+    margin-left: 0;
+}
+
+.buttons_panel button:last-child {
+    margin-right: 0;
+}
+
+.buttons_panel button:hover {
+    background-color: #3e8e41;
+}
+
+.buttons_panel button:active {
+    background-color: #1e4d1e;
+}
+
+.slider_container {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.slider_container > div:first-child {
+    display: flex;
+}
+
+.slider_container > div:first-child > * {
+    margin: 0 5px;
+}
+
+.slider_info {
+    color: #a5a5a5;
+    font-size: .8rem;
+    margin-left: 142px;
+}
