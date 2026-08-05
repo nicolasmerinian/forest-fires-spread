@@ -26,9 +26,13 @@ const simulation = new Simulation(model, renderer, defaults);
 const controls = new Controls(defaults, {
     onStart: () => simulation.start(),
     onStop: () => simulation.stop(),
-    onReset: () => simulation.reset(),
+    onReset: () => {
+        simulation.reset();
+        renderer.resetTime();
+    },
     onDensityChange: (newDensity) => {
         simulation.setDensity(newDensity);
+        renderer.resetTime();
     }
 });
 

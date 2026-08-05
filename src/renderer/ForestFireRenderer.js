@@ -148,4 +148,8 @@ export default class ForestFireRenderer {
             y + 85
         );
     }
+
+    resetTime() {
+        this.step = 0;
+    }
 }
