@@ -1,6 +1,7 @@
 export default class Controls {
-    constructor({ onStart }) {
+    constructor({ onStart, onStop }) {
         this.onStart = onStart;
+        this.onStop = onStop;
         this.createControls();
     }
 
@@ -14,7 +15,17 @@ export default class Controls {
         startButton.addEventListener("click", () => {
             this.onStart();
         });
-
+        
         container.appendChild(startButton);
+
+        // Stop button
+        const stopButton = document.createElement("button");
+        stopButton.textContent = "Stop";
+
+        stopButton.addEventListener("click", () => {
+            this.onStop();
+        });
+        
+        container.appendChild(stopButton);
     }
 }

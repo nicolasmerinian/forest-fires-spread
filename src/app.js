@@ -24,7 +24,8 @@ const renderer = new ForestFireRenderer(
 const simulation = new Simulation(model, renderer, defaults);
 
 const controls = new Controls({
-    onStart: () => simulation.start()
+    onStart: () => simulation.start(),
+    onStop: () => simulation.stop(),
 });
 
-// simulation.start();
+simulation.start();
