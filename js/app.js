@@ -2,36 +2,9 @@ import ForestFireModel from "./ForestFireModel.js";
 import ForestFireRenderer from "./ForestFireRenderer.js";
 import defaults from "../config/defaults.js";
 import pineForest from "../scenarios/pineForest.js";
+import vegetationTypes from "../data/vegetationTypes.js";
 
 const treeDensity = 0.45;  		// default and threshold: 0.55 (probability of a cell being a tree)
-
-const vegetationTypes = {
-    OAK: {
-        name: "OAK",
-        fuel: 30,
-        spottingFactor: 0.5 // A burning tree is more likely than burning grass to produce firebrands that ignite spot fires
-    },
-    PINE: {
-        name: "PINE",
-        fuel: 15,
-        spottingFactor: 1
-    },
-    BEECH: {
-        name: "BEECH",
-        fuel: 25,
-        spottingFactor: 0.4
-    },
-    SHRUB: {
-        name: "SHRUB",
-        fuel: 5,
-        spottingFactor: 0.1
-    },
-    GRASS: {
-        name: "GRASS",
-        fuel: 2,
-        spottingFactor: 0.01
-    }
-};
 
 const directionVectors = {
     NORTH: { x: 0, y: -1 },
@@ -44,7 +17,7 @@ const modelConfig = {
     ...defaults,
     forest: {
         ...pineForest,
-        vegetationTypes,
+        vegetationTypes: vegetationTypes,
         treeDensity
     },
     directionVectors
