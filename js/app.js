@@ -2,11 +2,12 @@ import ForestFireModel from "./ForestFireModel.js";
 import ForestFireRenderer from "./ForestFireRenderer.js";
 
 const rowAndColNumber = 150; 	// default : 100 (number of rows and columns in the grid)
-const cellSize = 4; 			// default : 7 (size of each cell in pixels)
+const cellSize = 5; 			// default : 7 (size of each cell in pixels)
 const treeDensity = 0.45;  		// default and threshold: 0.55 (probability of a cell being a tree)
 const simulationSpeed = 100; 	// default : 100 (ms between calculations)
+const humidity = 0.1;           // default : 0.1 (resistance to fire spread, 0 = no resistance, 1 = full resistance)
 
-const model = new ForestFireModel(rowAndColNumber, treeDensity);
+const model = new ForestFireModel(rowAndColNumber, treeDensity, humidity);
 
 const renderer = new ForestFireRenderer(
     model,
@@ -25,12 +26,12 @@ function loop(timestamp) {
 
     renderer.render();
 
-    
+
     if (model.isFinished()) {
         // No more fires to spread
         cancelAnimationFrame(animationFrameId);
         return;
-        
+
     }
 
     animationFrameId = requestAnimationFrame(loop);

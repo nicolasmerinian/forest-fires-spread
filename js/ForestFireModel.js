@@ -1,7 +1,8 @@
 export default class ForestFireModel {
-    constructor(size, treeDensity = 0.55) {
+    constructor(size, treeDensity = 0.55, humidity = 0) {
         this.size = size;
         this.treeDensity = treeDensity;
+        this.humidity = humidity;
         this.newFires = [];
 
         this.cellState = {
@@ -262,7 +263,7 @@ export default class ForestFireModel {
             return false;
         }
 
-        const probability = fireNeighbours.reduce(
+        let probability = fireNeighbours.reduce(
             (chance, fire) =>
                 chance * this.getWindEffect(
                     fire.x,
@@ -272,6 +273,10 @@ export default class ForestFireModel {
                 ),
             1
         );
+
+        // console.log("probability1 ", probability.toFixed(4));
+        probability *= this.getHumidityEffect();
+        // console.log("probability2 ", probability.toFixed(4));
 
         return Math.random() < probability;
     }
@@ -291,6 +296,12 @@ export default class ForestFireModel {
 
         // entre 0.1 et 1.0
         return 0.1 + ((alignment + 1) / 2) * this.wind.strength;
+    }
+
+    getHumidityEffect() {
+        // The humidity effect reduces the probability of fire spread based on the humidity level.
+        // A higher humidity value (closer to 1) means more resistance to fire spread.
+        return 1 - this.humidity; // Returns a value between 0 (full resistance) and 1 (no resistance)
     }
 
     // Spotting effect: If the wind is strong and the cell is on fire, it can ignite a random cell in the wind direction
