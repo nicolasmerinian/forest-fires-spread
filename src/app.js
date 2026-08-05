@@ -1,10 +1,10 @@
-import ForestFireModel from "../model/ForestFireModel.js";
-import ForestFireRenderer from "../renderer/ForestFireRenderer.js";
-import defaults from "../config/defaults.js";
-import buildConfig from "../config/buildConfig.js";
-import pineForest from "../data/scenarios/pineForest.js";
-import vegetationTypes from "../data/vegetationTypes.js";
-import directionVectors from "../constants/directions.js";
+import ForestFireModel from "./model/ForestFireModel.js";
+import ForestFireRenderer from "./renderer/ForestFireRenderer.js";
+import defaults from "./config/defaults.js";
+import buildConfig from "./config/buildConfig.js";
+import pineForest from "./data/scenarios/pineForest.js";
+import vegetationTypes from "./data/vegetationTypes.js";
+import directionVectors from "./constants/directions.js";
 
 const modelConfig = buildConfig(defaults, pineForest, vegetationTypes, directionVectors);
 
