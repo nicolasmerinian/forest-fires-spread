@@ -6,9 +6,7 @@ import pineForest from "../scenarios/pineForest.js";
 import vegetationTypes from "../data/vegetationTypes.js";
 import directionVectors from "../constants/directions.js";
 
-const treeDensity = 0.45; // default and threshold: 0.55 (probability of a cell being a tree)
-
-const modelConfig = buildConfig(defaults, pineForest, vegetationTypes, treeDensity, directionVectors);
+const modelConfig = buildConfig(defaults, pineForest, vegetationTypes, directionVectors);
 
 const model = new ForestFireModel(modelConfig);
 

@@ -1,10 +1,15 @@
-export default function buildConfig(defaults, forest, vegetationTypes, treeDensity, directionVectors) {
+export default function buildConfig(defaults, forest, vegetationTypes, directionVectors) {
     const config = {
-        ...defaults,
+        environment: {
+            ...defaults.environment,
+        },
         forest: {
+            ...defaults.forest,
             ...forest,
             vegetationTypes: vegetationTypes,
-            treeDensity
+        },
+        simulation: {
+            ...defaults.simulation,
         },
         directionVectors
     };
