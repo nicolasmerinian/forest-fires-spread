@@ -1,8 +1,8 @@
 export default class ForestFireModel {
-    constructor(size, treeDensity = 0.55, humidity = 0, vegetationTypes, forestComposition) {
+    constructor(forest, environment, size) {
         this.size = size;
-        this.treeDensity = treeDensity;
-        this.humidity = humidity;
+        this.treeDensity = forest.treeDensity;
+        this.humidity = environment.humidity;
         this.newFires = [];
 
         this.cellState = {
@@ -16,9 +16,9 @@ export default class ForestFireModel {
             BEECH: 7,
         };
 
-        this.forestComposition = this.convertForestComposition(forestComposition);
+        this.forestComposition = this.convertForestComposition(forest.composition);
 
-        this.vegetationTypes = this.convertVegetationTypes(vegetationTypes);
+        this.vegetationTypes = this.convertVegetationTypes(forest.vegetationTypes);
 
         this.directions = {
             NORTH: { x: 0, y: -1 },

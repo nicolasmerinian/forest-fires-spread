@@ -42,7 +42,31 @@ const vegetationTypes = {
     }
 };
 
-const model = new ForestFireModel(rowAndColNumber, treeDensity, humidity, vegetationTypes, forestComposition);
+
+
+
+const forest = {
+    vegetationTypes,
+    composition: forestComposition,
+    treeDensity
+};
+
+const environment = {
+    humidity
+};
+
+const simulationParameters = {
+    rowAndColNumber,
+    cellSize,
+    simulationSpeed
+}
+
+
+const model = new ForestFireModel(forest, environment, simulationParameters.rowAndColNumber);
+
+
+
+
 
 const renderer = new ForestFireRenderer(
     model,
