@@ -3,15 +3,9 @@ import ForestFireRenderer from "./ForestFireRenderer.js";
 import defaults from "../config/defaults.js";
 import pineForest from "../scenarios/pineForest.js";
 import vegetationTypes from "../data/vegetationTypes.js";
+import directionVectors from "../constants/directions.js";
 
 const treeDensity = 0.45;  		// default and threshold: 0.55 (probability of a cell being a tree)
-
-const directionVectors = {
-    NORTH: { x: 0, y: -1 },
-    EAST: { x: 1, y: 0 },
-    SOUTH: { x: 0, y: 1 },
-    WEST: { x: -1, y: 0 }
-};
 
 const modelConfig = {
     ...defaults,
