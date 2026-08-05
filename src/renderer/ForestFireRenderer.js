@@ -61,8 +61,8 @@ export default class ForestFireRenderer {
         const HUDParams = {
             x: 5,
             y: 5,
-            width: 110,
-            height: 68,
+            width: 128,
+            height: 95,
             padding: 8,
             fontSize: 20
         };
@@ -98,6 +98,7 @@ export default class ForestFireRenderer {
 
         // Wind direction and strength
         this.renderWindInfo(x, y, padding);
+        this.renderHumidityInfo(x, y, padding);
     }
 
     renderTimeElapsed(x, y, padding) {
@@ -132,6 +133,19 @@ export default class ForestFireRenderer {
             text,
             x + padding,
             y + 55
+        );
+    }
+
+    renderHumidityInfo(x, y, padding) {
+        const humidity = this.model.humidity * 100;
+        const text = `Humidity: ${humidity}%`;
+
+        // Text
+        this.ctx.fillStyle = "#000";
+        this.ctx.fillText(
+            text,
+            x + padding,
+            y + 85
         );
     }
 }
