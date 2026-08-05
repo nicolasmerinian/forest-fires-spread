@@ -6,6 +6,7 @@ import pineForest from "./data/scenarios/pineForest.js";
 import mixedForest from "./data/scenarios/mixedForest.js";
 import vegetationTypes from "./data/vegetationTypes.js";
 import directionVectors from "./constants/directions.js";
+import Simulation from "./simulation/Simulation.js";
 
 const modelConfig = buildConfig(defaults, mixedForest, vegetationTypes, directionVectors);
 
@@ -19,27 +20,6 @@ const renderer = new ForestFireRenderer(
     }
 );
 
-let lastUpdate = 0;
-let animationFrameId = null;
+const simulation = new Simulation(model, renderer, defaults);
 
-function loop(timestamp) {
-
-    if (timestamp - lastUpdate > defaults.simulation.speed) {
-        model.update();
-        lastUpdate = timestamp;
-    }
-
-    renderer.render();
-
-
-    if (model.isFinished()) {
-        // No more fires to spread
-        cancelAnimationFrame(animationFrameId);
-        return;
-
-    }
-
-    animationFrameId = requestAnimationFrame(loop);
-}
-
-requestAnimationFrame(loop);
+simulation.start();
