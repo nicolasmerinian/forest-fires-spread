@@ -1,21 +1,14 @@
 import ForestFireModel from "../model/ForestFireModel.js";
 import ForestFireRenderer from "../renderer/ForestFireRenderer.js";
 import defaults from "../config/defaults.js";
+import buildConfig from "../config/buildConfig.js";
 import pineForest from "../scenarios/pineForest.js";
 import vegetationTypes from "../data/vegetationTypes.js";
 import directionVectors from "../constants/directions.js";
 
 const treeDensity = 0.45; // default and threshold: 0.55 (probability of a cell being a tree)
 
-const modelConfig = {
-    ...defaults,
-    forest: {
-        ...pineForest,
-        vegetationTypes: vegetationTypes,
-        treeDensity
-    },
-    directionVectors
-}
+const modelConfig = buildConfig(defaults, pineForest, vegetationTypes, treeDensity, directionVectors);
 
 const model = new ForestFireModel(modelConfig);
 
