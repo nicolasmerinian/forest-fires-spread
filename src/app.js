@@ -7,6 +7,7 @@ import mixedForest from "./data/scenarios/mixedForest.js";
 import vegetationTypes from "./data/vegetationTypes.js";
 import directionVectors from "./constants/directions.js";
 import Simulation from "./simulation/Simulation.js";
+import Controls from "./ui/Controls.js";
 
 const modelConfig = buildConfig(defaults, mixedForest, vegetationTypes, directionVectors);
 
@@ -22,4 +23,8 @@ const renderer = new ForestFireRenderer(
 
 const simulation = new Simulation(model, renderer, defaults);
 
-simulation.start();
+const controls = new Controls({
+    onStart: () => simulation.start()
+});
+
+// simulation.start();
