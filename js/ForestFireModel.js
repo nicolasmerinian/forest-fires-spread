@@ -1,5 +1,5 @@
 export default class ForestFireModel {
-    constructor(size, treeDensity = 0.55, humidity = 0) {
+    constructor(size, treeDensity = 0.55, humidity = 0, forestComposition) {
         this.size = size;
         this.treeDensity = treeDensity;
         this.humidity = humidity;
@@ -16,13 +16,7 @@ export default class ForestFireModel {
             BEECH: 7,
         };
 
-        this.forestComposition = {
-            [this.cellState.GRASS]: 0.2,
-            [this.cellState.SHRUB]: 0.3,
-            [this.cellState.PINE]: 0.2,
-            [this.cellState.OAK]: 0.2,
-            [this.cellState.BEECH]: 0.1
-        };
+        this.forestComposition = this.convertForestComposition(forestComposition);
 
         this.cellTypes = {
             [this.cellState.OAK]: {
@@ -356,5 +350,14 @@ export default class ForestFireModel {
 
     isFinished() {
         return this.fireCount === 0;
+    }
+
+    convertForestComposition(composition) {
+        return Object.fromEntries(
+            Object.entries(composition).map(([type, probability]) => [
+                this.cellState[type],
+                probability
+            ])
+        );
     }
 }

@@ -6,8 +6,15 @@ const cellSize = 5; 			// default : 7 (size of each cell in pixels)
 const treeDensity = 0.45;  		// default and threshold: 0.55 (probability of a cell being a tree)
 const simulationSpeed = 100; 	// default : 100 (ms between calculations)
 const humidity = 0.1;           // default : 0.1 (resistance to fire spread, 0 = no resistance, 1 = full resistance)
+const forestComposition = {
+    GRASS: 0.2,
+    SHRUB: 0.3,
+    PINE: 0.2,
+    OAK: 0.2,
+    BEECH: 0.1
+};
 
-const model = new ForestFireModel(rowAndColNumber, treeDensity, humidity);
+const model = new ForestFireModel(rowAndColNumber, treeDensity, humidity, forestComposition);
 
 const renderer = new ForestFireRenderer(
     model,
