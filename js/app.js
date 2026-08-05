@@ -43,7 +43,7 @@ const vegetationTypes = {
     }
 };
 
-const directions = {
+const directionVectors = {
     NORTH: { x: 0, y: -1 },
     EAST: { x: 1, y: 0 },
     SOUTH: { x: 0, y: 1 },
@@ -56,34 +56,33 @@ const modelConfig = {
         composition: forestComposition,
         treeDensity
     },
-
     environment: {
         humidity,
         wind: {
-            direction: directions.EAST,
+            direction: 'EAST',
             strength: 0.5 // between 0 and 1
         }
     },
-
     simulation: {
         rowAndColNumber,
         cellSize,
         simulationSpeed
-    }
+    }, 
+    directionVectors
 }
 
 const model = new ForestFireModel(modelConfig);
 
 const rendererConfig = {
     cellSize,
-    directions
+    directionVectors
 }
 
 const renderer = new ForestFireRenderer(
     model,
     {
         cellSize,
-        directions
+        directionVectors
     }
 );
 

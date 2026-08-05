@@ -2,7 +2,7 @@ export default class ForestFireRenderer {
     constructor(model, config) {
         this.model = model;
         this.cellSize = config.cellSize;
-        this.directions = config.directions;
+        this.directionVectors = config.directionVectors;
         this.step = 0;
 
         this.createCanvas();
@@ -122,7 +122,7 @@ export default class ForestFireRenderer {
             NORTH: "↑",
             SOUTH: "↓"
         }
-        const windDirection = arrow[Object.keys(this.directions).find(key => this.directions[key] === wind.direction)];
+        const windDirection = arrow[wind.direction];
 
         const text = `Wind: ${wind.strength} ${windDirection}`;
 

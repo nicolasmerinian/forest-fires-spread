@@ -2,7 +2,11 @@ export default class ForestFireModel {
     constructor(config) {
         this.treeDensity = config.forest.treeDensity;
         this.humidity = config.environment.humidity;
-        this.wind = config.environment.wind;
+        this.wind = {
+            direction: config.environment.wind.direction,
+            vector: config.directionVectors[config.environment.wind.direction],
+            strength: config.environment.wind.strength
+        };
         this.size = config.simulation.rowAndColNumber;
 
         this.newFires = [];
@@ -253,8 +257,8 @@ export default class ForestFireModel {
         const directionY = dy / distance;
 
         const alignment =
-            directionX * this.wind.direction.x +
-            directionY * this.wind.direction.y;
+            directionX * this.wind.vector.x +
+            directionY * this.wind.vector.y;
 
         // entre 0.1 et 1.0
         return 0.1 + ((alignment + 1) / 2) * this.wind.strength;
@@ -286,8 +290,8 @@ export default class ForestFireModel {
         const spread = Math.floor(Math.random() * 3) - 1;
 
         // Calculate the target cell in the wind direction
-        const fireX = x + this.wind.direction.x * distance + spread;
-        const fireY = y + this.wind.direction.y * distance + spread;
+        const fireX = x + this.wind.vector.x * distance + spread;
+        const fireY = y + this.wind.vector.y * distance + spread;
 
         // Check if the target cell is within bounds and is a tree, shrub, or grass
         if (
