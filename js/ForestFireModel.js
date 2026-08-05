@@ -1,5 +1,5 @@
 export default class ForestFireModel {
-    constructor(size, treeDensity = 0.55, humidity = 0, forestComposition) {
+    constructor(size, treeDensity = 0.55, humidity = 0, vegetationTypes, forestComposition) {
         this.size = size;
         this.treeDensity = treeDensity;
         this.humidity = humidity;
@@ -18,33 +18,7 @@ export default class ForestFireModel {
 
         this.forestComposition = this.convertForestComposition(forestComposition);
 
-        this.cellTypes = {
-            [this.cellState.OAK]: {
-                name: "OAK",
-                fuel: 30,
-                spottingFactor: 0.5 // A burning tree is more likely than burning grass to produce firebrands that ignite spot fires
-            },
-            [this.cellState.PINE]: {
-                name: "PINE",
-                fuel: 15,
-                spottingFactor: 1
-            },
-            [this.cellState.BEECH]: {
-                name: "BEECH",
-                fuel: 25,
-                spottingFactor: 0.4
-            },
-            [this.cellState.SHRUB]: {
-                name: "SHRUB",
-                fuel: 5,
-                spottingFactor: 0.1
-            },
-            [this.cellState.GRASS]: {
-                name: "GRASS",
-                fuel: 2,
-                spottingFactor: 0.01
-            }
-        };
+        this.vegetationTypes = this.convertVegetationTypes(vegetationTypes);
 
         this.directions = {
             NORTH: { x: 0, y: -1 },
@@ -93,7 +67,7 @@ export default class ForestFireModel {
         const fire = trees[Math.floor(Math.random() * trees.length)];
         const index = this.getIndex(fire.x, fire.y);
         this.cells[index] = this.cellState.FIRE;
-        this.fuel[index] = this.cellTypes[this.cellState.GRASS].fuel; // Start with grass fuel for the initial fire
+        this.fuel[index] = this.vegetationTypes[this.cellState.GRASS].fuel; // Start with grass fuel for the initial fire
         this.fireCount += 1;
     }
 
@@ -125,7 +99,7 @@ export default class ForestFireModel {
                             this.fireCount -= 1;
                         }
 
-                        const burningType = this.cellTypes[this.fuelType[index]];
+                        const burningType = this.vegetationTypes[this.fuelType[index]];
                         if (burningType) {
                             this.createFireSpotting(x, y, burningType);
 
@@ -144,7 +118,7 @@ export default class ForestFireModel {
                     case this.cellState.BEECH:
                         if (this.canCatchFire(x, y)) {
                             this.cells[index] = this.cellState.FIRE;
-                            this.fuel[index] = this.cellTypes[state].fuel;
+                            this.fuel[index] = this.vegetationTypes[state].fuel;
                             this.fuelType[index] = state;
                             this.fireCount += 1;
                         }
@@ -342,7 +316,7 @@ export default class ForestFireModel {
                 // Ignite the target cell
                 this.newFires.push({
                     index: targetIndex,
-                    fuel: this.cellTypes[targetState].fuel
+                    fuel: this.vegetationTypes[targetState].fuel
                 });
             }
         }
@@ -357,6 +331,15 @@ export default class ForestFireModel {
             Object.entries(composition).map(([type, probability]) => [
                 this.cellState[type],
                 probability
+            ])
+        );
+    }
+
+    convertVegetationTypes(vegetationTypes) {
+        return Object.fromEntries(
+            Object.entries(vegetationTypes).map(([type, properties]) => [
+                this.cellState[type],
+                properties
             ])
         );
     }
