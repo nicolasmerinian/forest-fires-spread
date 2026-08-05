@@ -6,6 +6,7 @@ const cellSize = 5; 			// default : 7 (size of each cell in pixels)
 const treeDensity = 0.45;  		// default and threshold: 0.55 (probability of a cell being a tree)
 const simulationSpeed = 100; 	// default : 100 (ms between calculations)
 const humidity = 0.1;           // default : 0.1 (resistance to fire spread, 0 = no resistance, 1 = full resistance)
+
 const forestComposition = {
     GRASS: 0.2,
     SHRUB: 0.3,
@@ -42,36 +43,50 @@ const vegetationTypes = {
     }
 };
 
-
-
-
-const forest = {
-    vegetationTypes,
-    composition: forestComposition,
-    treeDensity
+const directions = {
+    NORTH: { x: 0, y: -1 },
+    EAST: { x: 1, y: 0 },
+    SOUTH: { x: 0, y: 1 },
+    WEST: { x: -1, y: 0 }
 };
 
-const environment = {
-    humidity
-};
+const modelConfig = {
+    forest: {
+        vegetationTypes,
+        composition: forestComposition,
+        treeDensity
+    },
 
-const simulationParameters = {
-    rowAndColNumber,
-    cellSize,
-    simulationSpeed
+    environment: {
+        humidity,
+        wind: {
+            direction: directions.EAST,
+            strength: 0.5 // between 0 and 1
+        }
+    },
+
+    simulation: {
+        rowAndColNumber,
+        cellSize,
+        simulationSpeed
+    }
 }
 
+const model = new ForestFireModel(modelConfig);
 
-const model = new ForestFireModel(forest, environment, simulationParameters.rowAndColNumber);
-
-
-
-
+const rendererConfig = {
+    cellSize,
+    directions
+}
 
 const renderer = new ForestFireRenderer(
     model,
-    cellSize
+    {
+        cellSize,
+        directions
+    }
 );
+
 
 let lastUpdate = 0;
 let animationFrameId = null;
