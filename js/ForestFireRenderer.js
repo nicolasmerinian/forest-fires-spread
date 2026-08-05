@@ -10,9 +10,11 @@ export default class ForestFireRenderer {
             "#000",         // empty
             "#422b24",      // ash
             "#F50",         // fire
-            "#147216",      // tree
-            "#9bb71d",      // shrub
-            "#90EE90",      // grass
+            "#45f345",      // grass
+            "#aed20f",      // shrub
+            "#557416",      // oak
+            "#228B22",      // pine
+            "#20653e",      // beech
         ];
     }
 

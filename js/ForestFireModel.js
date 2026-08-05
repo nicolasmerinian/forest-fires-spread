@@ -9,16 +9,36 @@ export default class ForestFireModel {
             EMPTY: 0,
             ASH: 1,
             FIRE: 2,
-            TREE: 3,
+            GRASS: 3,
             SHRUB: 4,
-            GRASS: 5
+            PINE: 5,
+            OAK: 6,
+            BEECH: 7,
+        };
+
+        this.forestComposition = {
+            [this.cellState.GRASS]: 0.2,
+            [this.cellState.SHRUB]: 0.3,
+            [this.cellState.PINE]: 0.2,
+            [this.cellState.OAK]: 0.2,
+            [this.cellState.BEECH]: 0.1
         };
 
         this.cellTypes = {
-            [this.cellState.TREE]: {
-                name: "TREE",
-                fuel: 20,
+            [this.cellState.OAK]: {
+                name: "OAK",
+                fuel: 30,
                 spottingFactor: 0.5 // A burning tree is more likely than burning grass to produce firebrands that ignite spot fires
+            },
+            [this.cellState.PINE]: {
+                name: "PINE",
+                fuel: 15,
+                spottingFactor: 1
+            },
+            [this.cellState.BEECH]: {
+                name: "BEECH",
+                fuel: 25,
+                spottingFactor: 0.4
             },
             [this.cellState.SHRUB]: {
                 name: "SHRUB",
@@ -110,7 +130,7 @@ export default class ForestFireModel {
                             this.cells[index] = this.cellState.ASH;
                             this.fireCount -= 1;
                         }
-                        
+
                         const burningType = this.cellTypes[this.fuelType[index]];
                         if (burningType) {
                             this.createFireSpotting(x, y, burningType);
@@ -123,39 +143,19 @@ export default class ForestFireModel {
 
                         break;
 
-                    case this.cellState.TREE:
-                        if (this.canCatchFire(x, y)) {
-                            this.cells[index] = this.cellState.FIRE;
-                            this.fuel[index] = this.cellTypes[this.cellState.TREE].fuel;
-                            this.fuelType[index] = this.cellState.TREE;
-                            this.fireCount += 1;
-                        }
-                        else {
-                            this.cells[index] = this.cellState.TREE;
-                        }
-                        break;
-
-                    case this.cellState.SHRUB:
-                        if (this.canCatchFire(x, y)) {
-                            this.cells[index] = this.cellState.FIRE;
-                            this.fuel[index] = this.cellTypes[this.cellState.SHRUB].fuel;
-                            this.fuelType[index] = this.cellState.SHRUB;
-                            this.fireCount += 1;
-                        }
-                        else {
-                            this.cells[index] = this.cellState.SHRUB;
-                        }
-                        break;
-
                     case this.cellState.GRASS:
+                    case this.cellState.SHRUB:
+                    case this.cellState.OAK:
+                    case this.cellState.PINE:
+                    case this.cellState.BEECH:
                         if (this.canCatchFire(x, y)) {
                             this.cells[index] = this.cellState.FIRE;
-                            this.fuel[index] = this.cellTypes[this.cellState.GRASS].fuel;
-                            this.fuelType[index] = this.cellState.GRASS;
+                            this.fuel[index] = this.cellTypes[state].fuel;
+                            this.fuelType[index] = state;
                             this.fireCount += 1;
                         }
                         else {
-                            this.cells[index] = this.cellState.GRASS;
+                            this.cells[index] = state;
                         }
                         break;
                 }
@@ -211,14 +211,19 @@ export default class ForestFireModel {
     }
 
     getRandomVegetationType() {
-        const rand = Math.random();
-        if (rand < 0.3) {
-            return this.cellState.TREE;
-        } else if (rand < 0.6) {
-            return this.cellState.SHRUB;
-        } else {
-            return this.cellState.GRASS;
+        const random = Math.random();
+        let cumulativeProbability = 0;
+
+        for (const [vegetationType, probability] of Object.entries(this.forestComposition)) {
+            cumulativeProbability += probability;
+
+            if (random < cumulativeProbability) {
+                return Number(vegetationType);
+            }
         }
+
+        // Fallback si la somme des probabilités est < 1 à cause d'une erreur de configuration
+        return this.cellState.EMPTY;
     }
 
     getFireNeighbours(x, y) {
@@ -319,7 +324,7 @@ export default class ForestFireModel {
 
         // Randomly determine the distance for spotting based on wind strength
         const distance = Math.floor(Math.random() * this.wind.strength * 10) + 1;
-        
+
         // Introduce a random spread to the fire spotting to make it less predictable
         const spread = Math.floor(Math.random() * 3) - 1;
 
