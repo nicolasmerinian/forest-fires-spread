@@ -1,8 +1,10 @@
 export default class Controls {
-    constructor({ onStart, onStop, onReset }) {
+    constructor(defaults, { onStart, onStop, onReset, onDensityChange }) {
+        this.defaults = defaults;
         this.onStart = onStart;
         this.onStop = onStop;
         this.onReset = onReset;
+        this.onDensityChange = onDensityChange;
         this.createControls();
     }
 
@@ -17,6 +19,9 @@ export default class Controls {
 
         // Reset button
         this.createResetButton(container);
+
+        // Density slider
+        this.createDensitySlider(container);
     }
     
     createStartButton(container) {
@@ -50,5 +55,32 @@ export default class Controls {
         });
         
         container.appendChild(resetButton);
+    }
+
+    createDensitySlider(container) {
+        // Label
+        const densityLabel = document.createElement("label");
+        densityLabel.textContent = "Density:";
+        container.appendChild(densityLabel);
+
+        // Slider
+        const densitySlider = document.createElement("input");
+        densitySlider.type = "range";
+        densitySlider.min = 0;
+        densitySlider.max = 1;
+        densitySlider.step = 0.01;
+        densitySlider.value = this.defaults.forest.treeDensity;
+        container.appendChild(densitySlider);
+
+        // Value display
+        const densityValue = document.createElement("span");
+        densityValue.textContent = densitySlider.value;
+        container.appendChild(densityValue);
+
+        // Event listener
+        densitySlider.addEventListener("input", () => {
+            densityValue.textContent = densitySlider.value;  
+            this.onDensityChange(parseFloat(densitySlider.value));
+        });
     }
 }

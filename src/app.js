@@ -23,10 +23,13 @@ const renderer = new ForestFireRenderer(
 
 const simulation = new Simulation(model, renderer, defaults);
 
-const controls = new Controls({
+const controls = new Controls(defaults, {
     onStart: () => simulation.start(),
     onStop: () => simulation.stop(),
-    onReset: () => simulation.reset()
+    onReset: () => simulation.reset(),
+    onDensityChange: (newDensity) => {
+        simulation.setDensity(newDensity);
+    }
 });
 
 simulation.start();

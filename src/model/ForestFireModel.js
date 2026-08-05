@@ -346,4 +346,12 @@ export default class ForestFireModel {
 
         this.initCells();
     }
+
+    setDensity(newDensity) {
+        if (newDensity < 0 || newDensity > 1) {
+            throw new Error("Density must be between 0 and 1");
+        }
+        
+        this.treeDensity = newDensity;
+    }
 }

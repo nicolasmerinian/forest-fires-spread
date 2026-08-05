@@ -54,4 +54,9 @@ export default class Simulation {
 
         this.animationFrameId = requestAnimationFrame(this.loop);
     }
+
+    setDensity(newDensity) {
+        this.model.setDensity(newDensity);
+        this.reset();
+    }
 }

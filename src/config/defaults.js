@@ -10,8 +10,8 @@ export default {
         treeDensity: 0.45 // default and threshold: 0.55 (probability of a cell being a tree)
     },
     simulation: {
-        gridSize: 150, // default : 100 (number of rows and columns in the grid)
-        cellSize: 5, // default : 7 (size of each cell in pixels)
+        gridSize: 100, // default : 100 (number of rows and columns in the grid)
+        cellSize: 4, // default : 7 (size of each cell in pixels)
         speed: 100 // default : 100 (ms between calculations)
     }
 };
