@@ -240,9 +240,9 @@ export default class ForestFireModel {
             1
         );
 
-        // console.log("probability1 ", probability.toFixed(4));
+        const ignitionProbability = this.vegetationTypes[this.cellsOld[this.getIndex(x, y)]].ignitionProbability;
+        probability *= ignitionProbability;
         probability *= this.getHumidityEffect();
-        // console.log("probability2 ", probability.toFixed(4));
 
         return Math.random() < probability;
     }
