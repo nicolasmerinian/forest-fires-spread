@@ -28,7 +28,7 @@ export default class Simulation {
     reset() {
         this.stop();
         this.model.reset();
-        this.renderer.render();
+        this.start();
     }
 
     loop = (timestamp) => {

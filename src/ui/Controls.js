@@ -1,7 +1,8 @@
 export default class Controls {
-    constructor({ onStart, onStop }) {
+    constructor({ onStart, onStop, onReset }) {
         this.onStart = onStart;
         this.onStop = onStop;
+        this.onReset = onReset;
         this.createControls();
     }
 
@@ -9,6 +10,16 @@ export default class Controls {
         const container = document.getElementById("controls");
 
         // Start button
+        this.createStartButton(container);
+
+        // Stop button
+        this.createStopButton(container);
+
+        // Reset button
+        this.createResetButton(container);
+    }
+    
+    createStartButton(container) {
         const startButton = document.createElement("button");
         startButton.textContent = "Start";
 
@@ -17,8 +28,9 @@ export default class Controls {
         });
         
         container.appendChild(startButton);
+    }
 
-        // Stop button
+    createStopButton(container) {
         const stopButton = document.createElement("button");
         stopButton.textContent = "Stop";
 
@@ -27,5 +39,16 @@ export default class Controls {
         });
         
         container.appendChild(stopButton);
+    }
+
+    createResetButton(container) {
+        const resetButton = document.createElement("button");
+        resetButton.textContent = "Reset";
+
+        resetButton.addEventListener("click", () => {
+            this.onReset();
+        });
+        
+        container.appendChild(resetButton);
     }
 }

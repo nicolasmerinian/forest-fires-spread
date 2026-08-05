@@ -336,4 +336,14 @@ export default class ForestFireModel {
             ])
         );
     }
+
+    reset() {
+        this.cells = this.createGrid();
+        this.cellsOld = this.createGrid();
+        this.fuel = this.createGrid();
+        this.fuelType = this.createGrid();
+        this.fireCount = 0;
+
+        this.initCells();
+    }
 }

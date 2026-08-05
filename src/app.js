@@ -26,6 +26,7 @@ const simulation = new Simulation(model, renderer, defaults);
 const controls = new Controls({
     onStart: () => simulation.start(),
     onStop: () => simulation.stop(),
+    onReset: () => simulation.reset()
 });
 
 simulation.start();
