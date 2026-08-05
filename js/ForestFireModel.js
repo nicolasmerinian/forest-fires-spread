@@ -7,7 +7,7 @@ export default class ForestFireModel {
             vector: config.directionVectors[config.environment.wind.direction],
             strength: config.environment.wind.strength
         };
-        this.size = config.simulation.rowAndColNumber;
+        this.size = config.simulation.gridSize;
 
         this.newFires = [];
 

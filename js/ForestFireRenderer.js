@@ -1,7 +1,7 @@
 export default class ForestFireRenderer {
     constructor(model, config) {
         this.model = model;
-        this.cellSize = config.cellSize;
+        this.cellSize = config.simulation.cellSize;
         this.directionVectors = config.directionVectors;
         this.step = 0;
 

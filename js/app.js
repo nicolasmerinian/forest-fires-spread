@@ -1,19 +1,9 @@
 import ForestFireModel from "./ForestFireModel.js";
 import ForestFireRenderer from "./ForestFireRenderer.js";
+import defaults from "../config/defaults.js";
+import pineForest from "../scenarios/pineForest.js";
 
-const rowAndColNumber = 150; 	// default : 100 (number of rows and columns in the grid)
-const cellSize = 5; 			// default : 7 (size of each cell in pixels)
 const treeDensity = 0.45;  		// default and threshold: 0.55 (probability of a cell being a tree)
-const simulationSpeed = 100; 	// default : 100 (ms between calculations)
-const humidity = 0.1;           // default : 0.1 (resistance to fire spread, 0 = no resistance, 1 = full resistance)
-
-const forestComposition = {
-    GRASS: 0.2,
-    SHRUB: 0.3,
-    PINE: 0.2,
-    OAK: 0.2,
-    BEECH: 0.1
-};
 
 const vegetationTypes = {
     OAK: {
@@ -51,48 +41,31 @@ const directionVectors = {
 };
 
 const modelConfig = {
+    ...defaults,
     forest: {
+        ...pineForest,
         vegetationTypes,
-        composition: forestComposition,
         treeDensity
     },
-    environment: {
-        humidity,
-        wind: {
-            direction: 'EAST',
-            strength: 0.5 // between 0 and 1
-        }
-    },
-    simulation: {
-        rowAndColNumber,
-        cellSize,
-        simulationSpeed
-    }, 
     directionVectors
 }
 
 const model = new ForestFireModel(modelConfig);
 
-const rendererConfig = {
-    cellSize,
-    directionVectors
-}
-
 const renderer = new ForestFireRenderer(
     model,
     {
-        cellSize,
+        ...defaults,
         directionVectors
     }
 );
-
 
 let lastUpdate = 0;
 let animationFrameId = null;
 
 function loop(timestamp) {
 
-    if (timestamp - lastUpdate > simulationSpeed) {
+    if (timestamp - lastUpdate > defaults.simulation.speed) {
         model.update();
         lastUpdate = timestamp;
     }

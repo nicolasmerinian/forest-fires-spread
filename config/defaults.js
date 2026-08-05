@@ -1,0 +1,15 @@
+export default {
+    simulation: {
+        gridSize: 150, // default : 100 (number of rows and columns in the grid)
+        cellSize: 5, // default : 7 (size of each cell in pixels)
+        speed: 100 // default : 100 (ms between calculations)
+    },
+
+    environment: {
+        humidity: 0.2, // default : 0.1 (resistance to fire spread, 0 = no resistance, 1 = full resistance)
+        wind: {
+            direction: "EAST",
+            strength: 0.5
+        }
+    }
+};
