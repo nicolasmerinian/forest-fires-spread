@@ -1,10 +1,11 @@
 export default class Controls {
-    constructor(defaults, { onStart, onStop, onReset, onDensityChange }) {
+    constructor(defaults, { onStart, onStop, onReset, onDensityChange, onWindDirectionChange }) {
         this.defaults = defaults;
         this.onStart = onStart;
         this.onStop = onStop;
         this.onReset = onReset;
         this.onDensityChange = onDensityChange;
+        this.onWindDirectionChange = onWindDirectionChange;
         this.createControls();
     }
 
@@ -24,6 +25,9 @@ export default class Controls {
 
         // Density slider
         this.createDensitySlider(container);
+
+        // Wind Buttons
+        this.createWindButtons(container);
     }
 
     createButtonsPanel(container) {
@@ -105,6 +109,27 @@ export default class Controls {
         densitySlider.addEventListener("input", () => {
             densityValue.textContent = densitySlider.value;  
             this.onDensityChange(parseFloat(densitySlider.value));
+        });
+    }
+
+    createWindButtons(container) {
+        const windContainer = document.createElement("div");
+        windContainer.className = "wind_container controls_section";
+        container.appendChild(windContainer);
+
+        const windLabel = document.createElement("label");
+        windLabel.textContent = "Wind";
+        windContainer.appendChild(windLabel);
+
+        const directions = ["NORTH", "EAST", "SOUTH", "WEST"];
+        directions.forEach(direction => {
+            const button = document.createElement("button");
+            button.textContent = direction;
+            button.className = "wind_button wind_" + direction.toLowerCase();
+            button.addEventListener("click", () => {
+                this.onWindDirectionChange(direction);
+            });
+            windContainer.appendChild(button);
         });
     }
 }

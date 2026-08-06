@@ -1,3 +1,5 @@
+import directionVectors from "../constants/directions.js";
+
 export default class ForestFireModel {
     constructor(config) {
         this.treeDensity = config.forest.treeDensity;
@@ -353,5 +355,14 @@ export default class ForestFireModel {
         }
         
         this.treeDensity = newDensity;
+    }
+
+    setWindDirection(newDirection) {
+        if (!directionVectors.hasOwnProperty(newDirection)) {
+            throw new Error("Invalid wind direction");
+        }
+
+        this.wind.direction = newDirection;
+        this.wind.vector = directionVectors[newDirection];
     }
 }

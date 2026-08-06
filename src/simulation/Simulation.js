@@ -59,4 +59,8 @@ export default class Simulation {
         this.model.setDensity(newDensity);
         this.reset();
     }
+
+    setWindDirection(newDirection) {
+        this.model.setWindDirection(newDirection);
+    }
 }

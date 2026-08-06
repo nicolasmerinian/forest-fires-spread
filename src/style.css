@@ -72,3 +72,46 @@ main {
     font-size: .8rem;
     margin-left: 142px;
 }
+
+.wind_container {
+    display: grid;
+    grid-auto-flow: row;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.wind_button {
+    height: 2rem;
+    width: 5rem;
+}
+    
+.wind_container label {
+    grid-column-start: 2;
+    grid-row-start: 2;
+}
+
+.wind_north {
+    grid-column-start: 2;
+    grid-row-start: 1;
+}
+
+.wind_east {
+    grid-column-start: 3;
+    grid-row-start: 2;
+}
+
+.wind_south {
+    grid-column-start: 2;
+    grid-row-start: 3;
+}
+
+.wind_west {
+    grid-column-start: 1;
+    grid-row-start: 2;
+}
+        

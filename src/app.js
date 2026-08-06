@@ -33,6 +33,9 @@ const controls = new Controls(defaults, {
     onDensityChange: (newDensity) => {
         simulation.setDensity(newDensity);
         renderer.resetTime();
+    },
+    onWindDirectionChange: (newDirection) => {
+        simulation.setWindDirection(newDirection);
     }
 });
 
