@@ -10,6 +10,8 @@ main {
     flex-direction: row;
 }
 
+/* CONTROLS PANEL */
+
 .controls_panel {
     display: flex;
     flex-direction: column;
@@ -20,10 +22,11 @@ main {
     color: #F0F0F0;
 }
 
+/* MAIN BUTTONS */
+
 .controls_panel .controls_section {
     margin-top: .5rem;
     margin-bottom: .5rem;
-    width: 100%;
 }
 
 .buttons_panel button {
@@ -53,6 +56,8 @@ main {
     background-color: #1e4d1e;
 }
 
+/* SLIDER */
+
 .slider_container {
     display: flex;
     flex-direction: column;
@@ -73,6 +78,8 @@ main {
     margin-left: 142px;
 }
 
+/* WIND */
+
 .wind_container {
     display: grid;
     grid-auto-flow: row;
@@ -85,18 +92,10 @@ main {
     gap: 5px;
 }
 
-.wind_button {
-    height: 2rem;
-    width: 5rem;
-}
-
-.wind_container .toggle {
+.wind_container .wind_toggle {
     grid-column-start: 2;
     grid-row-start: 2;
-}
 
-
-.wind_container .toggle {
     position: relative;
     box-sizing: border-box;
 
@@ -109,11 +108,15 @@ main {
     background-color: #333;
 }
 
-.wind_container .toggle.active {
+.wind_container.active .wind_toggle {
     background-color: #DDD;
 }
 
-.wind_container .toggle input {
+.wind_container:not(.active) .wind_toggle {
+    background-color: #333;
+}
+
+.wind_container .wind_toggle input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
@@ -123,24 +126,54 @@ main {
     left: -4px;
 }
 
-
-
 .wind_north {
     grid-column-start: 2;
     grid-row-start: 1;
+    width: 30px;
+    height: 34px;
+    background-color: #dedede;
+    clip-path: polygon(0 100%, 100% 100%, 50% 30%);
+    cursor: pointer;
 }
 
 .wind_east {
     grid-column-start: 3;
     grid-row-start: 2;
+    width: 26px;
+    height: 30px;
+    background-color: #dedede;
+    clip-path: polygon(0 0, 0% 100%, 100% 50%);
+    cursor: pointer;
 }
 
 .wind_south {
     grid-column-start: 2;
     grid-row-start: 3;
+    width: 30px;
+    height: 34px;
+    background-color: #dedede;
+    clip-path: polygon(0 0, 100% 0%, 50% 70%);
+    cursor: pointer;
 }
 
 .wind_west {
     grid-column-start: 1;
     grid-row-start: 2;
+    width: 26px;
+    height: 30px;
+    background-color: #dedede;
+    clip-path: polygon(0 50%, 100% 0%, 100% 100%);
+    cursor: pointer;
+}
+
+.wind_container.active .wind_directional_button:hover {
+    background-color: #ffffff;
+}
+
+.wind_container.active .wind_directional_button:active {
+    background-color: #939393;
+}
+
+.wind_container:not(.active) .wind_directional_button {
+    background-color: #595959;
 }

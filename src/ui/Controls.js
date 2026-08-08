@@ -134,8 +134,8 @@ export default class Controls {
         const directions = ["NORTH", "EAST", "SOUTH", "WEST"];
         directions.forEach(direction => {
             const button = document.createElement("button");
-            button.textContent = direction;
-            button.className = "wind_button wind_" + direction.toLowerCase();
+            // button.textContent = direction;
+            button.className = "wind_directional_button wind_" + direction.toLowerCase();
             button.addEventListener("click", () => {
                 this.onWindDirectionChange(direction);
             });
@@ -145,7 +145,7 @@ export default class Controls {
 
     createWindToggle(container) {
         const windToggleContainer = document.createElement("div");
-        windToggleContainer.className = "toggle";
+        windToggleContainer.className = "wind_toggle";
         container.appendChild(windToggleContainer);
 
         const windInput = document.createElement("input");
@@ -154,7 +154,7 @@ export default class Controls {
 
         windInput.addEventListener("click", () => {
             this.onWindToggle(windInput.checked);
-            windToggleContainer.classList.toggle("active", windInput.checked);
+            container.classList.toggle("active", windInput.checked);
         });
 
         return windToggleContainer;
