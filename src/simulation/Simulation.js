@@ -63,4 +63,8 @@ export default class Simulation {
     setWindDirection(newDirection) {
         this.model.setWindDirection(newDirection);
     }
+
+    setWindEnabled(isWindEnabled) {
+        this.model.setWindEnabled(isWindEnabled);
+    }
 }

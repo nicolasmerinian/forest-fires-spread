@@ -125,7 +125,9 @@ export default class ForestFireRenderer {
         }
         const windDirection = arrow[wind.direction];
 
-        const text = `Wind: ${wind.strength} ${windDirection}`;
+        const text = wind.enabled 
+            ? `Wind: ${wind.strength} ${windDirection}` 
+            : "Wind: OFF";
 
         // Text
         this.ctx.fillStyle = "#000";

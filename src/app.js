@@ -36,6 +36,9 @@ const controls = new Controls(defaults, {
     },
     onWindDirectionChange: (newDirection) => {
         simulation.setWindDirection(newDirection);
+    },
+    onWindToggle: (isWindEnabled) => {
+        simulation.setWindEnabled(isWindEnabled);
     }
 });
 

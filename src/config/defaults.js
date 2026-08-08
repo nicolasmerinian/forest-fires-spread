@@ -3,7 +3,8 @@ export default {
         humidity: 0.2, // default : 0.1 (resistance to fire spread, 0 = no resistance, 1 = full resistance)
         wind: {
             direction: "EAST",
-            strength: 0.5
+            strength: 0.5,
+            enabled: false // default : false (wind is disabled by default)
         }
     },
     forest: {

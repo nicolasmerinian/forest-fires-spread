@@ -1,11 +1,19 @@
 export default class Controls {
-    constructor(defaults, { onStart, onStop, onReset, onDensityChange, onWindDirectionChange }) {
+    constructor(defaults, { 
+        onStart, 
+        onStop, 
+        onReset, 
+        onDensityChange, 
+        onWindDirectionChange, 
+        onWindToggle 
+    }) {
         this.defaults = defaults;
         this.onStart = onStart;
         this.onStop = onStop;
         this.onReset = onReset;
         this.onDensityChange = onDensityChange;
         this.onWindDirectionChange = onWindDirectionChange;
+        this.onWindToggle = onWindToggle;
         this.createControls();
     }
 
@@ -36,7 +44,7 @@ export default class Controls {
         container.appendChild(buttonsPanel);
         return buttonsPanel;
     }
-    
+
     createStartButton(container) {
         const startButton = document.createElement("button");
         startButton.textContent = "Start";
@@ -44,7 +52,7 @@ export default class Controls {
         startButton.addEventListener("click", () => {
             this.onStart();
         });
-        
+
         container.appendChild(startButton);
     }
 
@@ -55,7 +63,7 @@ export default class Controls {
         stopButton.addEventListener("click", () => {
             this.onStop();
         });
-        
+
         container.appendChild(stopButton);
     }
 
@@ -66,7 +74,7 @@ export default class Controls {
         resetButton.addEventListener("click", () => {
             this.onReset();
         });
-        
+
         container.appendChild(resetButton);
     }
 
@@ -107,20 +115,22 @@ export default class Controls {
 
         // Event listener
         densitySlider.addEventListener("input", () => {
-            densityValue.textContent = densitySlider.value;  
+            densityValue.textContent = densitySlider.value;
             this.onDensityChange(parseFloat(densitySlider.value));
         });
     }
 
     createWindButtons(container) {
+        // Container for the wind directional buttons and the toggle
         const windContainer = document.createElement("div");
         windContainer.className = "wind_container controls_section";
         container.appendChild(windContainer);
+        
+        // Create the wind toggle
+        const windToggleContainer = this.createWindToggle(windContainer);
+        windContainer.appendChild(windToggleContainer);
 
-        const windLabel = document.createElement("label");
-        windLabel.textContent = "Wind";
-        windContainer.appendChild(windLabel);
-
+        // Create the wind directional buttons
         const directions = ["NORTH", "EAST", "SOUTH", "WEST"];
         directions.forEach(direction => {
             const button = document.createElement("button");
@@ -131,5 +141,22 @@ export default class Controls {
             });
             windContainer.appendChild(button);
         });
+    }
+
+    createWindToggle(container) {
+        const windToggleContainer = document.createElement("div");
+        windToggleContainer.className = "toggle";
+        container.appendChild(windToggleContainer);
+
+        const windInput = document.createElement("input");
+        windInput.type = "checkbox";
+        windToggleContainer.appendChild(windInput);
+
+        windInput.addEventListener("click", () => {
+            this.onWindToggle(windInput.checked);
+            windToggleContainer.classList.toggle("active", windInput.checked);
+        });
+
+        return windToggleContainer;
     }
 }

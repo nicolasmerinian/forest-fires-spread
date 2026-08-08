@@ -7,7 +7,8 @@ export default class ForestFireModel {
         this.wind = {
             direction: config.environment.wind.direction,
             vector: config.directionVectors[config.environment.wind.direction],
-            strength: config.environment.wind.strength
+            strength: config.environment.wind.strength,
+            enabled: config.environment.wind.enabled
         };
         this.size = config.simulation.gridSize;
 
@@ -250,6 +251,10 @@ export default class ForestFireModel {
     }
 
     getWindEffect(fireX, fireY, targetX, targetY) {
+        if (!this.wind.enabled) {
+            return 1; // No wind effect if wind is disabled
+        }
+
         const dx = targetX - fireX;
         const dy = targetY - fireY;
 
@@ -262,7 +267,7 @@ export default class ForestFireModel {
             directionX * this.wind.vector.x +
             directionY * this.wind.vector.y;
 
-        // entre 0.1 et 1.0
+        // Between 0.1 et 1.0
         return 0.1 + ((alignment + 1) / 2) * this.wind.strength;
     }
 
@@ -275,7 +280,7 @@ export default class ForestFireModel {
     // Spotting effect: If the wind is strong and the cell is on fire, it can ignite a random cell in the wind direction
     createFireSpotting(x, y, type) {
         // Only create fire spotting if the wind is strong enough
-        if (this.wind.strength <= 0.5) {
+        if (!this.wind.enabled || this.wind.strength <= 0.5) {
             return;
         }
 
@@ -364,5 +369,9 @@ export default class ForestFireModel {
 
         this.wind.direction = newDirection;
         this.wind.vector = directionVectors[newDirection];
+    }
+
+    setWindEnabled(isWindEnabled) {
+        this.wind.enabled = Boolean(isWindEnabled); // Ensure it's a boolean
     }
 }
